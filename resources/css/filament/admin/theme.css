@@ -1,0 +1,17 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+@source '../../../../resources/views/components/**/*';
+@source '../../../../resources/views/livewire/**/*';
+@source '../../../../app/Livewire/**/*';
+@source '../../../../resources/views/**/*.blade.php';
+@source '../../../../resources/**/*.js';
+
+@font-face {
+    font-family: "Siemreap";
+    src: url('./Siemreap/Siemreap-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-display: swap;
+}
