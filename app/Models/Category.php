@@ -5,11 +5,15 @@ namespace App\Models;
 use App\Models\Traits\CategoryTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Support\LogOptions;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
 
 class Category extends Model
 {
     use CategoryTrait;
     use SoftDeletes;
+    use LogsActivity;
+
 
     protected $table = 'categories';
 
@@ -23,6 +27,19 @@ class Category extends Model
         'user_id',
         'user_updated',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([ 
+                'main_cat_id',
+                'branch_id',
+                'name',
+                'name_kh',
+                'user_id',
+                'user_updated',
+            ]);
+    }
 
     protected $scoped = ['belongs_to'];
 

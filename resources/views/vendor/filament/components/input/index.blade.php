@@ -11,4 +11,4 @@
             'fi-input-has-inline-suffix' => $inlineSuffix,
         ])
     }}
-/>
+ />
