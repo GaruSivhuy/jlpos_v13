@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
-use App\Models\Traits\CategoryTrait;
+// use App\Models\Traits\CategoryTrait;
+use App\Stevebauman\Inventory\Traits\CategoryTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class Category extends Model
 {
     use CategoryTrait;
-    use SoftDeletes;
     use LogsActivity;
-
+    use SoftDeletes;
 
     protected $table = 'categories';
 
@@ -31,7 +32,7 @@ class Category extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly([ 
+            ->logOnly([
                 'main_cat_id',
                 'branch_id',
                 'name',
@@ -61,7 +62,7 @@ class Category extends Model
     /**
      * The hasMany inventories relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function inventories()
     {
@@ -73,9 +74,11 @@ class Category extends Model
         return $this->belongsTo('App\Models\Branch', 'branch_id');
     }
 
-    public function scopeBranch($query){
-        if(auth()->user()->is_admin != 1){
+    public function scopeBranch($query)
+    {
+        if (auth()->user()->is_admin != 1) {
             $branch = auth()->user()->branch->pluck('id');
+
             return $query->whereIn('branch_id', $branch);
         }
     }

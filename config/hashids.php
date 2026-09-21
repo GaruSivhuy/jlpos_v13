@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Product;
+use App\Models\Purchase;
+
 return [
 
     /*
@@ -31,17 +34,23 @@ return [
         'main' => [
             'salt' => '',
             'length' => 0,
-            'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+            'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
         ],
 
         'alternative' => [
             'salt' => 'your-salt-string',
             'length' => 'your-length-integer',
-            'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+            'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
         ],
 
-        \App\Models\Product::class => [
-            'salt' => \App\Models\Product::class.env('APP_KEY'),
+        Product::class => [
+            'salt' => Product::class.env('APP_KEY'),
+            'length' => 12,
+            'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
+        ],
+
+        Purchase::class => [
+            'salt' => Purchase::class.env('APP_KEY'),
             'length' => 12,
             'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
         ],

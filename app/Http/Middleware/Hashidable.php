@@ -2,25 +2,29 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Covid\WorkAccident;
-use App\Models\Covid\WorkerObservation;
+use App\Models\Product;
+use App\Models\Purchase;
 use Closure;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class Hashidable
 {
-    private $routeModelMapping = [        
-        'filament.admin.resources.products.view' => \App\Models\Product::class,
-        'filament.admin.resources.products.edit' => \App\Models\Product::class,
+    private $routeModelMapping = [
+        'filament.admin.resources.products.view' => Product::class,
+        'filament.admin.resources.products.edit' => Product::class,
+
+        'filament.admin.resources.purchase.view' => Purchase::class,
+        'filament.admin.resources.purchase.edit' => Purchase::class,
     ];
 
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @param  Request  $request
+     * @param  Closure(Request): (\Illuminate\Http\Response|RedirectResponse)  $next
+     * @return \Illuminate\Http\Response|RedirectResponse
      */
     private function getModelId($model, $routeKey)
     {

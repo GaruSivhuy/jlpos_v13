@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Filament\Resources\Customers\CustomerResource;
 use App\Filament\Resources\Pricelists\PricelistResource;
 use App\Filament\Resources\Products\ProductResource;
 use App\Filament\Resources\Remarks\RemarkResource;
+use App\Filament\Resources\Suppliers\SupplierResource;
 use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
 use Filament\Pages\Dashboard;
 use Filament\Widgets\AccountWidget;
@@ -183,6 +185,8 @@ return [
             ProductResource::class => ProductResource::getPermissionPrefixes(),
             PricelistResource::class => PricelistResource::getPermissionPrefixes(),
             RemarkResource::class => RemarkResource::getPermissionPrefixes(),
+            CustomerResource::class => CustomerResource::getPermissionPrefixes(),
+            SupplierResource::class => SupplierResource::getPermissionPrefixes(),
         ],
         'exclude' => [
             //

@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Baum\Generators;
+
+use Illuminate\Filesystem\Filesysmte;
+use Illuminate\Filesystem\Filesystem;
+
+abstract class Generator
+{
+    /**
+     * The filesystem instance.
+     *
+     * @var Filesystem
+     */
+    protected $files = null;
+
+    /**
+     * Create a new MigrationGenerator instance.
+     *
+     * @param  Filesysmte  $files
+     * @return void
+     */
+    public function __construct(Filesystem $files)
+    {
+        $this->files = $files;
+    }
+
+    /**
+     * Get the path to the stubs.
+     *
+     * @return string
+     */
+    public function getStubPath()
+    {
+        return __DIR__.'/stubs';
+    }
+
+    /**
+     * Get the filesystem instance.
+     *
+     * @return Filesystem
+     */
+    public function getFilesystem()
+    {
+        return $this->files;
+    }
+
+    /**
+     * Get the given stub by name.
+     *
+     * @param  string  $table
+     * @return void
+     */
+    protected function getStub($name)
+    {
+        if (stripos($name, '.php') === false) {
+            $name = $name.'.php';
+        }
+
+        return $this->files->get($this->getStubPath().'/'.$name);
+    }
+
+    /**
+     * Parse the provided stub and replace via the array given.
+     *
+     * @param  string  $stub
+     * @param  string  $replacements
+     * @return string
+     */
+    protected function parseStub($stub, $replacements = [])
+    {
+        $output = $stub;
+
+        foreach ($replacements as $key => $replacement) {
+            $search = '{{'.$key.'}}';
+            $output = str_replace($search, $replacement, $output);
+        }
+
+        return $output;
+    }
+
+    /**
+     * Inflect to a class name
+     *
+     * @param  string  $input
+     * @return string
+     */
+    protected function classify($input)
+    {
+        return studly_case(str_singular($input));
+    }
+
+    /**
+     * Inflect to table name
+     *
+     * @param  string  $input
+     * @return string
+     */
+    protected function tableize($input)
+    {
+        return snake_case(str_plural($input));
+    }
+}

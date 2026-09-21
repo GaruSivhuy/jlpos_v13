@@ -2,21 +2,26 @@
 
 namespace App\Models;
 
+use App\Http\Traits\Hashidable;
+use App\Stevebauman\Inventory\Traits\InventoryTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\Activitylog\Support\LogOptions;
-use App\Http\Traits\Hashidable;
 
 class Product extends Model implements HasMedia
 {
+    use Hashidable;
     use InteractsWithMedia;
+    use InventoryTrait;
     use LogsActivity;
     use SoftDeletes;
-    use Hashidable;
-    
+
     protected $table = 'inventories';
 
     protected $dates = ['deleted_at'];
@@ -45,7 +50,7 @@ class Product extends Model implements HasMedia
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly([                 
+            ->logOnly([
                 'user_id',
                 'category_id',
                 'name',
@@ -64,7 +69,7 @@ class Product extends Model implements HasMedia
                 'main_cat_id',
             ]);
     }
-    
+
     public function category()
     {
         return $this->hasOne('App\Models\Category', 'id', 'category_id');
@@ -89,46 +94,46 @@ class Product extends Model implements HasMedia
     {
         return $this->morphToMany("App\Models\Metric", 'metricsables')->withPivot('metric_id', 'metricsables_id', 'metricsables_type', 'price', 'user_id')->orderBy('metrics.qty', 'desc');
     }
-    
+
     /**
      * The hasOne metric relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
     public function metric()
     {
         return $this->hasOne('App\Models\Metric', 'id', 'metric_id');
     }
 
-    // /**
-    //  * The hasOne sku relationship.
-    //  *
-    //  * @return \Illuminate\Database\Eloquent\Relations\HasOne
-    //  */
-    // public function sku()
-    // {
-    //     return $this->hasOne('HUY\Inventory\Models\InventorySku', 'inventory_id', 'id');
-    // }
+    /**
+     * The hasOne sku relationship.
+     *
+     * @return HasOne
+     */
+    public function sku()
+    {
+        return $this->hasOne('App\Stevebauman\Inventory\Models\InventorySku', 'inventory_id', 'id');
+    }
 
-    // /**
-    //  * The hasMany stocks relationship.
-    //  *
-    //  * @return \Illuminate\Database\Eloquent\Relations\HasMany
-    //  */
-    // public function stocks()
-    // {
-    //     return $this->hasMany('HUY\Inventory\Models\InventoryStock', 'inventory_id', 'id');
-    // }
+    /**
+     * The hasMany stocks relationship.
+     *
+     * @return HasMany
+     */
+    public function stocks()
+    {
+        return $this->hasMany('App\Stevebauman\Inventory\Models\InventoryStock', 'inventory_id', 'id');
+    }
 
-    // /**
-    //  * The belongsToMany suppliers relationship.
-    //  *
-    //  * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    //  */
-    // public function suppliers()
-    // {
-    //     return $this->belongsToMany('HUY\Inventory\Models\Supplier', 'inventory_suppliers', 'inventory_id')->withTimestamps();
-    // }
+    /**
+     * The belongsToMany suppliers relationship.
+     *
+     * @return BelongsToMany
+     */
+    public function suppliers()
+    {
+        return $this->belongsToMany('App\Models\Supplier', 'inventory_suppliers', 'inventory_id')->withTimestamps();
+    }
 
     // /**
     //  * The belongsToMany assemblies relationship.
@@ -153,15 +158,16 @@ class Product extends Model implements HasMedia
     public function remarks()
     {
         return $this->morphToMany("App\Models\Remark", 'remarksables')->withPivot('remark_id', 'remarksables_id', 'remarksables_type');
-    } 
+    }
 
-    public function scopeBranch($query){
-        if(auth()->user()->is_admin != 1){
+    public function scopeBranch($query)
+    {
+        if (auth()->user()->is_admin != 1) {
             $branch = auth()->user()->branch->pluck('id');
+
             return $query->whereIn('inventories.branch_id', $branch);
         }
     }
-
 
     //
 }
