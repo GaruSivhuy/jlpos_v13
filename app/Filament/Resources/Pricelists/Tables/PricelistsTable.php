@@ -20,34 +20,35 @@ class PricelistsTable
     {
         return $table
             ->columns([
-                TextColumn::make('pbar_code')->label(__("global.pbar_code"))
-                ->state(function ($record) {
-                    return $record->inventory?->pbar_code;
-                })->copyable(),
-                TextColumn::make('name_kh')->label(__("global.product"))->searchable()
-                ->state(function ($record) {
-                    return $record->inventory?->name_kh;
-                }),
-                TextColumn::make('metric.name')->label(__("global.mname")),
-                TextColumn::make('price')->label(__("global.price_whole")),
-                TextColumn::make('user_updated.name')->label(__("global.updated_by")),
-                TextColumn::make('inventory.branch.name_kh')->label(__("global.branch")),
-                TextColumn::make('updated_at')->label(__("global.updated_at")),
-            
+                TextColumn::make('pbar_code')->label(__('global.pbar_code'))
+                    ->state(function ($record) {
+                        return $record->inventory?->pbar_code;
+                    })->copyable(),
+                TextColumn::make('name_kh')->label(__('global.product'))->searchable()
+                    ->state(function ($record) {
+                        return $record->inventory?->name_kh;
+                    }),
+                TextColumn::make('metric.name')->label(__('global.mname')),
+                TextColumn::make('price')->label(__('global.price_whole')),
+                TextColumn::make('user_updated.name')->label(__('global.updated_by')),
+                TextColumn::make('inventory.branch.name_kh')->label(__('global.branch')),
+                TextColumn::make('updated_at')->label(__('global.updated_at')),
+
             ])
             ->filters([
                 // TrashedFilter::make(),
             ])
+            ->defaultSort('id', 'desc')
             ->striped()
             ->persistFiltersInSession()
             ->searchOnBlur(true)
             ->recordActions([
                 // ViewAction::make(),
                 EditAction::make()
-                ->hiddenLabel()
-                ->tooltip("កំណត់តម្លៃ")
-                ->icon(Heroicon::CurrencyDollar),
-            ], position:RecordActionsPosition::BeforeCells)
+                    ->hiddenLabel()
+                    ->tooltip('កំណត់តម្លៃ')
+                    ->icon(Heroicon::CurrencyDollar),
+            ], position: RecordActionsPosition::BeforeCells)
             ->toolbarActions([
                 // BulkActionGroup::make([
                 //     DeleteBulkAction::make(),
