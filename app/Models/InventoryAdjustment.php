@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Http\Traits\Hashidable;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
 class InventoryAdjustment extends Model
 {
+    use Hashidable;
     use LogsActivity;
 
     protected $table = 'inventory_adjustment';

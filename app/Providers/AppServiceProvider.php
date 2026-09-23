@@ -2,13 +2,15 @@
 
 namespace App\Providers;
 
+use App\Filament\SidebarNavigationManager;
 use Carbon\CarbonImmutable;
+use Filament\Navigation\NavigationManager;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -109,6 +111,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        $this->app->scoped(NavigationManager::class, fn (): NavigationManager => new SidebarNavigationManager);
     }
 
     /**
@@ -137,7 +141,7 @@ class AppServiceProvider extends ServiceProvider
     {
         FilamentView::registerRenderHook(
             PanelsRenderHook::BODY_END,
-            fn(): View => view('filament.forms.components.advance-field-validating'),
+            fn (): View => view('filament.forms.components.advance-field-validating'),
         );
     }
 }

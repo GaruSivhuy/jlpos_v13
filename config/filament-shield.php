@@ -2,12 +2,21 @@
 
 declare(strict_types=1);
 
+use App\Filament\Resources\Control\Categories\CategoryResource;
+use App\Filament\Resources\Control\ChangeProducts\ChangeProductResource;
+use App\Filament\Resources\Control\ExchangeMoney\ExchangeMoneyResource;
+use App\Filament\Resources\Control\ExchangeRates\ExchangeRateResource;
+use App\Filament\Resources\Control\Locations\LocationResource;
+use App\Filament\Resources\Control\MainCategories\MainCategoryResource;
+use App\Filament\Resources\Control\Metrics\MetricResource;
+use App\Filament\Resources\Control\OverMoney\OverMoneyResource;
+use App\Filament\Resources\Control\PaymentGateways\PaymentGatewayResource;
 use App\Filament\Resources\Customers\CustomerResource;
 use App\Filament\Resources\Pricelists\PricelistResource;
 use App\Filament\Resources\Products\ProductResource;
 use App\Filament\Resources\Remarks\RemarkResource;
+use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Resources\Suppliers\SupplierResource;
-use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
 use Filament\Pages\Dashboard;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -187,6 +196,15 @@ return [
             RemarkResource::class => RemarkResource::getPermissionPrefixes(),
             CustomerResource::class => CustomerResource::getPermissionPrefixes(),
             SupplierResource::class => SupplierResource::getPermissionPrefixes(),
+            MainCategoryResource::class => MainCategoryResource::getPermissionPrefixes(),
+            CategoryResource::class => CategoryResource::getPermissionPrefixes(),
+            MetricResource::class => MetricResource::getPermissionPrefixes(),
+            LocationResource::class => LocationResource::getPermissionPrefixes(),
+            ExchangeRateResource::class => ExchangeRateResource::getPermissionPrefixes(),
+            PaymentGatewayResource::class => PaymentGatewayResource::getPermissionPrefixes(),
+            ExchangeMoneyResource::class => ExchangeMoneyResource::getPermissionPrefixes(),
+            ChangeProductResource::class => ChangeProductResource::getPermissionPrefixes(),
+            OverMoneyResource::class => OverMoneyResource::getPermissionPrefixes(),
         ],
         'exclude' => [
             //

@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Http\Traits\Hashidable;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
 class StockTransfer extends Model
 {
+    use Hashidable;
     use LogsActivity;
 
     protected $table = 'stock_transfer';

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Http\Traits\Hashidable;
 use Illuminate\Database\Eloquent\Model;
 
 class Location extends Model
 {
+    use Hashidable;
+
     protected $table = 'locations';
 
     protected $fillable = [
@@ -34,11 +37,12 @@ class Location extends Model
         return $this->belongsTo('App\Models\User', 'user_updated');
     }
 
-    public function scopeBranch($query){
-        if(auth()->user()->is_admin != 1){
+    public function scopeBranch($query)
+    {
+        if (auth()->user()->is_admin != 1) {
             $branch = auth()->user()->branch->pluck('id');
+
             return $query->whereIn('branch_id', $branch);
         }
     }
-
 }

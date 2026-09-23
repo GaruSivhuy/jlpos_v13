@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Http\Traits\Hashidable;
 use App\Stevebauman\Inventory\Traits\InventoryTrait;
+use App\Stevebauman\Inventory\Traits\InventoryVariantTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,6 +20,7 @@ class Product extends Model implements HasMedia
     use Hashidable;
     use InteractsWithMedia;
     use InventoryTrait;
+    use InventoryVariantTrait;
     use LogsActivity;
     use SoftDeletes;
 

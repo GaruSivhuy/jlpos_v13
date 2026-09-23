@@ -16,6 +16,7 @@
         "laravel/tinker": "^3.0",
         "livewire/blaze": "^1.0",
         "livewire/livewire": "^4.1",
+        "maatwebsite/excel": "^4.0",
         "njxqlus/filament-relation-manager-component": "^2.2",
         "spatie/laravel-activitylog": "^5.0",
         "vinkla/hashids": "^14.0",

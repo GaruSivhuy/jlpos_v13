@@ -93,14 +93,14 @@ class InventoryAdjustmentsTable
                             $reason = 'Inventory adjustment by added item to stock '.$location->name.'-'.$location->name_kh.' on '.now()->format('Y-m-d h:i:s');
 
                             try {
-                                $product->putToLocation($quantity, $location, $metric, $reason);
+                                $product->putToLocation($quantity, $location, null, $reason);
                             } catch (StockNotFoundException $e) {
-                                $product->createStockOnLocation($quantity, $location, $metric, $reason);
+                                $product->createStockOnLocation($quantity, $location, null, $reason);
                             }
                         } else {
                             $reason = 'Inventory adjustment by minus item from stock '.$location->name.'-'.$location->name_kh.' on '.now()->format('Y-m-d h:i:s');
 
-                            $product->takeFromLocation($quantity, $location, $metric, $reason);
+                            $product->takeFromLocation($quantity, $location, null, $reason);
                         }
                     }
 

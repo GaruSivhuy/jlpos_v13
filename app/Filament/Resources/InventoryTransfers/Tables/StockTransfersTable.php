@@ -92,12 +92,12 @@ class StockTransfersTable
                         $metric = $detail->metric;
                         $quantity = $detail->qty * $metric->qty;
 
-                        $product->takeFromLocation($quantity, $fromLocation, $metric, 'Transfer Stock Out To '.$toLocation->name.'-'.$toLocation->name_kh.' on '.now()->format('Y-m-d h:i:s'));
+                        $product->takeFromLocation($quantity, $fromLocation, null, 'Transfer Stock Out To '.$toLocation->name.'-'.$toLocation->name_kh.' on '.now()->format('Y-m-d h:i:s'));
 
                         try {
-                            $product->putToLocation($quantity, $toLocation, $metric, 'Transfer Stock From '.$fromLocation->name.'-'.$fromLocation->name_kh.' on '.now()->format('Y-m-d h:i:s'));
+                            $product->putToLocation($quantity, $toLocation, null, 'Transfer Stock From '.$fromLocation->name.'-'.$fromLocation->name_kh.' on '.now()->format('Y-m-d h:i:s'));
                         } catch (StockNotFoundException $e) {
-                            $product->createStockOnLocation($quantity, $toLocation, $metric, 'Transfer Stock From '.$fromLocation->name.'-'.$fromLocation->name_kh.' on '.now()->format('Y-m-d h:i:s'));
+                            $product->createStockOnLocation($quantity, $toLocation, null, 'Transfer Stock From '.$fromLocation->name.'-'.$fromLocation->name_kh.' on '.now()->format('Y-m-d h:i:s'));
                         }
                     }
 

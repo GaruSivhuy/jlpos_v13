@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use App\Models\Traits\CategoryTrait;
+use App\Http\Traits\Hashidable;
 use App\Stevebauman\Inventory\Traits\CategoryTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,6 +14,7 @@ use Spatie\Activitylog\Support\LogOptions;
 class Category extends Model
 {
     use CategoryTrait;
+    use Hashidable;
     use LogsActivity;
     use SoftDeletes;
 

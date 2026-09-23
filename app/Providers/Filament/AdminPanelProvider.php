@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\Login;
+use App\Filament\Resources\Sale\InvoiceResource;
 use App\Http\Middleware\Hashidable;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use CraftForge\FilamentLanguageSwitcher\FilamentLanguageSwitcherPlugin;
@@ -10,10 +11,11 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -25,6 +27,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+
+use function Filament\Support\original_request;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -120,6 +124,32 @@ class AdminPanelProvider extends PanelProvider
                 ],
             ])
             ->sidebarWidth('20rem')
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label(fn (): string => __('global.product'))
+                    ->icon(Heroicon::OutlinedShoppingBag),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('global.customer'))
+                    ->icon(Heroicon::OutlinedUserGroup),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('global.supplier'))
+                    ->icon(Heroicon::OutlinedBuildingStorefront),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('global.purchase'))
+                    ->icon(Heroicon::OutlinedTruck),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('global.inventory_stock'))
+                    ->icon(Heroicon::OutlinedArchiveBox),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('global.sale'))
+                    ->icon(Heroicon::OutlinedShoppingCart),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('global.control'))
+                    ->icon(Heroicon::OutlinedAdjustmentsHorizontal),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('global.setting'))
+                    ->icon(Heroicon::OutlinedCog6Tooth),
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -143,13 +173,15 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make()
-                ->navigationGroup('Settings')   // put it in your existing group
-                ->navigationSort(99)            // position within that group
-                ->navigationIcon('heroicon-o-shield-check') // optional
-                ->navigationLabel(__('global.roles')),
+                    ->navigationGroup(fn (): string => __('global.setting'))   // put it in your existing group
+                    ->navigationSort(99)            // position within that group
+                    ->navigationIcon('heroicon-o-shield-check') // optional
+                    ->navigationLabel(__('global.roles'))
+                    ->modelLabel(fn (): string => __('global.roles'))
+                    ->pluralModelLabel(fn (): string => __('global.roles')),
                 FilamentLanguageSwitcherPlugin::make()
-                ->locales(['km', 'en'])
-                ->showOnAuthPages(),
+                    ->locales(['km', 'en'])
+                    ->showOnAuthPages(),
             ])
             ->authMiddleware([
                 Authenticate::class,
@@ -160,7 +192,7 @@ class AdminPanelProvider extends PanelProvider
             ->globalSearch(false)
             ->darkMode(false)
             ->brandName('JinLong') // removes text app name
-            ->brandLogo(asset("backend/images/JL.png"))
+            ->brandLogo(asset('backend/images/JL.png'))
             // ->renderHook(
             //     PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
             //     fn (): string => view('filament.pages.auth.login-header')->render(),
@@ -168,6 +200,12 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 PanelsRenderHook::BODY_START,
                 fn (): string => Blade::render('@livewire(\'livewire-ui-modal\')'),
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_START,
+                fn (): string => view('filament.hooks.pos-sidebar', [
+                    'isPos' => original_request()->routeIs(InvoiceResource::getRouteBaseName().'.pos'),
+                ])->render(),
             )
             ->renderHook(
                 PanelsRenderHook::BODY_END,
@@ -280,11 +318,11 @@ class AdminPanelProvider extends PanelProvider
             //                     form.setAttribute('novalidate', 'novalidate');
             //                 });
             //             }
-    
+
             //             document.addEventListener('DOMContentLoaded', applyNovalidate);
             //             document.addEventListener('livewire:navigated', applyNovalidate);
             //             document.addEventListener('livewire:load', applyNovalidate);
-    
+
             //             // Livewire re-renders forms on every update (validation errors, etc.)
             //             document.addEventListener('livewire:update', applyNovalidate);
             //             if (window.Livewire) {
@@ -293,7 +331,6 @@ class AdminPanelProvider extends PanelProvider
             //         </script>
             //     HTML,
             // )
-            ->viteTheme('resources/css/filament/admin/theme.css')
-            ;
+            ->viteTheme('resources/css/filament/admin/theme.css');
     }
 }

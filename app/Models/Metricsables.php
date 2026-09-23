@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use App\Http\Traits\Hashidable;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
 class Metricsables extends Model
 {
+    use Hashidable;
     use LogsActivity;
-    
+
     protected $table = 'metricsables';
 
     protected $fillable = [
@@ -25,7 +27,7 @@ class Metricsables extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly([  
+            ->logOnly([
                 'metric_id',
                 'metricsables_type',
                 'metricsables_id',

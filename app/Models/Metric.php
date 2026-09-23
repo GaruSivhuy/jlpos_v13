@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
+use App\Http\Traits\Hashidable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Metric extends Model
 {
+    use Hashidable;
+    use SoftDeletes;
+
     protected $table = 'metrics';
 
     protected $dates = ['deleted_at'];
@@ -40,9 +45,11 @@ class Metric extends Model
         return $this->morphedByMany("App\Models\Product", 'metricsables');
     }
 
-    public function scopeBranch($query){
-        if(auth()->user()->is_admin != 1){
+    public function scopeBranch($query)
+    {
+        if (auth()->user()->is_admin != 1) {
             $branch = auth()->user()->branch->pluck('id');
+
             return $query->whereIn('branch_id', $branch);
         }
     }

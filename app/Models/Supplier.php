@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Traits\Hashidable;
 use App\Stevebauman\Inventory\Traits\SupplierTrait;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
@@ -9,7 +10,7 @@ use Spatie\Activitylog\Support\LogOptions;
 
 class Supplier extends Model
 {
-    use LogsActivity, SupplierTrait;
+    use Hashidable, LogsActivity, SupplierTrait;
 
     protected $table = 'suppliers';
 

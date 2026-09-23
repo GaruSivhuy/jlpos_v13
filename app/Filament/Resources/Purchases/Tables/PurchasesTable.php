@@ -24,6 +24,7 @@ use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -32,12 +33,17 @@ class PurchasesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->addSelect(['items_cost' => static::getItemsCostSubquery()]))
             ->defaultSort('id', 'desc')
             ->columns([
                 TextColumn::make('id')->label(__('global.id')),
                 TextColumn::make('po_code')->label(__('global.po_code'))->searchable()->sortable(),
                 TextColumn::make('po_date')->label(__('global.po_date'))->searchable()->sortable(),
-                TextColumn::make('cost')->label(__('global.purchase_cost'))->searchable()->sortable(),
+                TextColumn::make('cost')->label(__('global.purchase_cost'))
+                    ->state(fn ($record) => $record->items_cost)
+                    ->formatStateUsing(fn ($state) => number_format((float) $state, 2)),
+                // ->searchable(query: fn (Builder $query, string $search): Builder => $query->where(static::getItemsCostSubquery(), 'like', "%{$search}%"))
+                // ->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('items_cost', $direction)),
                 TextColumn::make('discount')->label(__('global.discount')),
                 TextColumn::make('status')->label(__('global.status'))->searchable()->sortable()
                     ->formatStateUsing(fn ($state) => $state == 1 ? __('global.stock_submit') : __('global.stock_not_submit')),
@@ -85,6 +91,16 @@ class PurchasesTable
             ]);
     }
 
+    /**
+     * Sum of price * quantity over the purchase's detail rows.
+     */
+    protected static function getItemsCostSubquery(): QueryBuilder
+    {
+        return DB::table('purchase_detail')
+            ->selectRaw('coalesce(sum(price * quantity), 0)')
+            ->whereColumn('purchase_detail.purchase_id', 'purchase.id');
+    }
+
     protected static function getSubmitStockAction(): Action
     {
         return Action::make('submit')
@@ -108,10 +124,10 @@ class PurchasesTable
                         $location = $record->location;
 
                         try {
-                            $stock = $product->getStockFromLocation($location, $metric);
+                            $stock = $product->getStockFromLocation($location, null);
                             $stock->put($detail->quantity * $metric->qty, 'Stock In', $detail->quantity * $detail->price);
                         } catch (StockNotFoundException $e) {
-                            $product->createStockOnLocation($detail->quantity * $metric->qty, $location, $metric, 'Stock In', $detail->quantity * $detail->price);
+                            $product->createStockOnLocation($detail->quantity * $metric->qty, $location, null, 'Stock In', $detail->quantity * $detail->price);
                         }
                     }
 

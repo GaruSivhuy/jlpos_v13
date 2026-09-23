@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Http\Traits\Hashidable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Remark extends Model
 {
+    use Hashidable;
     use SoftDeletes;
 
     protected $table = 'remarks';
@@ -40,13 +42,14 @@ class Remark extends Model
         return $this->morphedByMany("App\Models\Product", 'remarksables');
     }
 
-    public function scopeBranch($query){
-        if(auth()->user()->is_admin != 1){
+    public function scopeBranch($query)
+    {
+        if (auth()->user()->is_admin != 1) {
             $branch = auth()->user()->branch->pluck('id');
+
             return $query->whereIn('branch_id', $branch);
         }
     }
-
 
     public function getDescriptionForEvent(string $eventName): string
     {
