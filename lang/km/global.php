@@ -363,4 +363,11 @@ return [
     'report_currency_type' => 'ប្រភេទសាច់ប្រាក់',
     'report_subtotal_by_type' => 'សរុបតាមប្រភេទ',
     'cancelled' => 'បានលុបចោល',
+
+    'daily_sale_data' => 'ទិន្នន័យលក់ប្រចាំថ្ងៃ',
+    'all_invoices' => 'វិក្កយបត្រទាំងអស់',
+    'paid_invoices' => 'វិក្កយបត្របានបង់ប្រាក់រួច',
+    'cancelled_invoices' => 'វិក្កយបត្របានលុបចោល',
+    'monthly_invoice_summary' => 'សរុបវិក្កយបត្រប្រចាំខែ',
+    'top_selling_products' => 'ផលិតផលលក់ដាច់ជាងគេ ទាំង១០មុខ',
 ];

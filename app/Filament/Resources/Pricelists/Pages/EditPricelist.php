@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Pricelists\Pages;
 use App\Filament\Resources\BaseEditRecord;
 use App\Filament\Resources\Pricelists\PricelistResource;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 use Override;
 
 class EditPricelist extends BaseEditRecord
@@ -28,6 +29,13 @@ class EditPricelist extends BaseEditRecord
         $data['product_name'] = $this->record->inventory?->name_kh." - ". $this->record->inventory?->name;
         $data['metric_name'] = $this->record->metric?->name_kh;
         return parent::mutateFormDataBeforeFill($data);
+    }
+
+    #[Override]
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        $data['user_id'] = auth()->user()->id;
+        return parent::handleRecordUpdate($record, $data);
     }
 
     public function getTitle(): string|Htmlable

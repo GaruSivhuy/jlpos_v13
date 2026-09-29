@@ -19,6 +19,7 @@ class PricelistsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('id', 'desc')
             ->columns([
                 TextColumn::make('pbar_code')->label(__('global.pbar_code'))
                     ->state(function ($record) {

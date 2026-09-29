@@ -357,4 +357,11 @@ return [
     'report_subtotal_by_type' => 'Subtotal by Type',
     'cancelled' => 'Cancelled',
 
+    'daily_sale_data' => 'Daily Sale Data',
+    'all_invoices' => 'All Invoices',
+    'paid_invoices' => 'Paid Invoices',
+    'cancelled_invoices' => 'Cancelled Invoices',
+    'monthly_invoice_summary' => 'Monthly Invoice Summary',
+    'top_selling_products' => 'Top 10 Best Selling Products',
+
 ];

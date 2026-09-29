@@ -8,6 +8,8 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
+use Override;
 
 class EditRemark extends BaseEditRecord
 {
@@ -16,9 +18,18 @@ class EditRemark extends BaseEditRecord
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make(),
-            ForceDeleteAction::make(),
-            RestoreAction::make(),
+            // DeleteAction::make(),
+            // ForceDeleteAction::make(),
+            // RestoreAction::make(),
         ];
     }
+
+    #[Override]
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        $data['user_updated'] = auth()->user()->id;
+        return parent::handleRecordUpdate($record, $data);
+    }
+
+
 }
