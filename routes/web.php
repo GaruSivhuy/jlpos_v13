@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 
 // Route::view('/', 'welcome')->name('home');
 
+#Testing
+
 Route::get('/', function () {
     return redirect('admin');
 });
