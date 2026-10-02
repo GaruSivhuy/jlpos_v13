@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Filament\Widgets\Concerns\HasDateRangeFilter;
 use App\Models\Invoice;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Carbon\CarbonInterface;
 use Carbon\CarbonPeriod;
 use Filament\Widgets\ChartWidget;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 class MonthlyInvoiceChart extends ChartWidget
 {
     use HasDateRangeFilter;
+    use HasWidgetShield;
 
     protected static ?int $sort = 2;
 

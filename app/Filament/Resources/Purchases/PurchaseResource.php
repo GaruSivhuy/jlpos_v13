@@ -9,6 +9,7 @@ use App\Filament\Resources\Purchases\Schemas\PurchaseForm;
 use App\Filament\Resources\Purchases\Tables\PurchasesTable;
 use App\Models\Purchase;
 use BackedEnum;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -17,8 +18,19 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use UnitEnum;
 
-class PurchaseResource extends Resource
+class PurchaseResource extends Resource implements HasShieldPermissions
 {
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            "view_any",
+            "view",
+            "create",
+            "update",
+            "delete",
+        ];
+    }
+
     protected static ?string $model = Purchase::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;

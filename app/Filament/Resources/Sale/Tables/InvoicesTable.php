@@ -122,7 +122,7 @@ class InvoicesTable
         return Action::make('changePayment')
             ->label(__('global.change_payment'))
             ->icon('heroicon-o-arrow-path')
-            ->visible(fn (Invoice $record) => $record->status == Invoice::PAID && InvoiceResource::userCan('sale:menu:change_payment'))
+            ->visible(fn (Invoice $record) => $record->status == Invoice::PAID && InvoiceResource::userCan('change_payment:invoice'))
             ->modalHeading(__('global.change_payment'))
             ->fillForm(fn (Invoice $record) => ['payment_gateway' => $record->payment_gateway])
             ->schema([
@@ -150,7 +150,7 @@ class InvoicesTable
             ->label(__('global.cancel_invoice'))
             ->icon('heroicon-o-x-circle')
             ->color('danger')
-            ->visible(fn (Invoice $record) => $record->status == Invoice::PAID && InvoiceResource::userCan('sale:menu:cancel'))
+            ->visible(fn (Invoice $record) => $record->status == Invoice::PAID && InvoiceResource::userCan('cancel:invoice'))
             ->requiresConfirmation()
             ->modalHeading(__('global.cancel_invoice'))
             ->modalDescription(__('global.cancel_invoice_text'))

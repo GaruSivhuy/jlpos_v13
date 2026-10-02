@@ -9,14 +9,26 @@ use App\Filament\Resources\InventoryTransfers\Schemas\StockTransferForm;
 use App\Filament\Resources\InventoryTransfers\Tables\StockTransfersTable;
 use App\Models\StockTransfer;
 use BackedEnum;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class InventoryTransferResource extends Resource
+class InventoryTransferResource extends Resource implements HasShieldPermissions
 {
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            "view_any",
+            "view",
+            "create",
+            "update",
+            "delete",
+        ];
+    }
+
     protected static ?string $model = StockTransfer::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowsRightLeft;

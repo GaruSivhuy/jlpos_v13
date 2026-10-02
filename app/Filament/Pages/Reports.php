@@ -12,6 +12,7 @@ use App\Filament\Resources\Control\Schemas\BranchSelect;
 use App\Models\MainCategory;
 use App\Models\User;
 use BackedEnum;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
@@ -26,6 +27,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class Reports extends Page
 {
+    use HasPageShield;
+
     /**
      * Report types that stream an Excel download instead of opening a print-ready page.
      */

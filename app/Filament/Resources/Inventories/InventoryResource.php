@@ -7,13 +7,25 @@ use App\Filament\Resources\Inventories\Pages\ListInventoryMovements;
 use App\Filament\Resources\Inventories\Tables\InventoriesTable;
 use App\Stevebauman\Inventory\Models\InventoryStock;
 use BackedEnum;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class InventoryResource extends Resource
+class InventoryResource extends Resource implements HasShieldPermissions
 {
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            "view_any",
+            "view",
+            "create",
+            "update",
+            "delete",
+        ];
+    }
+
     protected static ?string $model = InventoryStock::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;

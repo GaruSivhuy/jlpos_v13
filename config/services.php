@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'telegram-bot-api' => [
+        'token' => env('TELEGRAM_BOT_TOKEN'),
+        'cancel_invoice_chat_id' => env('TELEGRAM_CANCEL_INVOICE_CHAT_ID', '-1001557188791'),
+    ],
+
 ];

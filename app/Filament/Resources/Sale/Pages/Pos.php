@@ -34,6 +34,13 @@ class Pos extends Page
 {
     protected static string $resource = InvoiceResource::class;
 
+    public static function authorizeResourceAccess(): void
+    {
+        parent::authorizeResourceAccess();
+
+        abort_unless(InvoiceResource::userCan('view_any_pos:invoice'), 403);
+    }
+
     protected string $view = 'filament.resources.sale.pages.pos';
 
     /**

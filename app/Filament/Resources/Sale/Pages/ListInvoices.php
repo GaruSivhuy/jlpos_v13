@@ -12,26 +12,16 @@ class ListInvoices extends ListRecords
 {
     protected static string $resource = InvoiceResource::class;
 
+    public static function authorizeResourceAccess(): void
+    {
+        parent::authorizeResourceAccess();
+
+        abort_unless(InvoiceResource::userCan('view_any_invoice:invoice'), 403);
+    }
+
     public function table(Table $table): Table
     {
         return InvoicesTable::configure($table);
     }
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            // Action::make('pos')
-            //     ->label(__('global.pos'))
-            //     ->icon('heroicon-o-plus')
-            //     ->url(fn () => InvoiceResource::getUrl('pos'))
-            //     ->openUrlInNewTab()
-            //     ->visible(fn () => InvoiceResource::userCan('sale:menu:pos')),
-            // Action::make('details')
-            //     ->label(__('global.invoice_detail'))
-            //     ->icon('heroicon-o-shopping-cart')
-            //     ->color('gray')
-            //     ->url(fn () => InvoiceResource::getUrl('details'))
-            //     ->visible(fn () => InvoiceResource::userCan('sale:menu:invoice_detail')),
-        ];
-    }
+    
 }

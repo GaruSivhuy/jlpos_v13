@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Invoice;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\Widget;
 
 /**
@@ -11,6 +12,8 @@ use Filament\Widgets\Widget;
  */
 class DailySaleOverview extends Widget
 {
+    use HasWidgetShield;
+
     protected string $view = 'filament.widgets.daily-sale-overview';
 
     protected static ?int $sort = 1;

@@ -12,6 +12,13 @@ class ListInvoiceDetails extends ListRecords
 {
     protected static string $resource = InvoiceResource::class;
 
+    public static function authorizeResourceAccess(): void
+    {
+        parent::authorizeResourceAccess();
+
+        abort_unless(InvoiceResource::userCan('view_any_invoice_datail:invoice'), 403);
+    }
+
     public function table(Table $table): Table
     {
         return InvoiceDetailsTable::configure($table);

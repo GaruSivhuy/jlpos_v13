@@ -77,7 +77,7 @@ class OverMoneyResource extends Resource implements HasShieldPermissions
      */
     public static function canEdit(Model $record): bool
     {
-        return $record->over_money_date === null || $record->over_money_date->greaterThanOrEqualTo(today());
+        return parent::canEdit($record) && ($record->over_money_date === null || $record->over_money_date->greaterThanOrEqualTo(today()));
     }
 
     public static function getNavigationLabel(): string

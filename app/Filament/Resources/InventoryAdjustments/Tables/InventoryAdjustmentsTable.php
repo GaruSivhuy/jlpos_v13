@@ -71,7 +71,7 @@ class InventoryAdjustmentsTable
             ->label(__('global.submit_stock'))
             ->icon('heroicon-o-shopping-cart')
             ->color('success')
-            ->visible(fn ($record) => $record->status == 0 && $record->inventoryAdjustmentDetails()->exists())
+            ->visible(fn ($record) => auth()->user()->can('') && ($record->status == 0 && $record->inventoryAdjustmentDetails()->exists()))
             ->requiresConfirmation()
             ->modalHeading(__('global.submit_stock'))
             ->modalFooterActions(fn ($action) => [

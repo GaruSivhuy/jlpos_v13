@@ -9,14 +9,26 @@ use App\Filament\Resources\InventoryAdjustments\Schemas\InventoryAdjustmentForm;
 use App\Filament\Resources\InventoryAdjustments\Tables\InventoryAdjustmentsTable;
 use App\Models\InventoryAdjustment;
 use BackedEnum;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class InventoryAdjustmentResource extends Resource
+class InventoryAdjustmentResource extends Resource implements HasShieldPermissions
 {
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            "view_any",
+            "view",
+            "create",
+            "update",
+            "delete",
+        ];
+    }
+
     protected static ?string $model = InventoryAdjustment::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAdjustmentsHorizontal;

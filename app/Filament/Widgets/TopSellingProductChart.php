@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Filament\Widgets\Concerns\HasDateRangeFilter;
 use App\Models\Invoice;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Carbon\CarbonInterface;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\Support\Htmlable;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Cache;
 class TopSellingProductChart extends ChartWidget
 {
     use HasDateRangeFilter;
+    use HasWidgetShield;
 
     protected const LIMIT = 10;
 

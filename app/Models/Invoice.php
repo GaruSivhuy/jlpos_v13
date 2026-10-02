@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Http\Traits\Hashidable;
+use App\Notifications\CancelInvoiceNotification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
@@ -159,6 +161,21 @@ class Invoice extends Model
                 'user_updated' => auth()->id(),
             ]);
         });
+
+        $this->notifyCancelled();
+    }
+
+    /**
+     * Send the cancel invoice notification to Telegram without failing the cancellation.
+     */
+    protected function notifyCancelled(): void
+    {
+        try {
+            Notification::route('telegram', config('services.telegram-bot-api.cancel_invoice_chat_id'))
+                ->notify(new CancelInvoiceNotification($this, auth()->user()?->name));
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 
     /**

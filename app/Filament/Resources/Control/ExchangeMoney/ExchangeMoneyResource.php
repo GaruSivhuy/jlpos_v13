@@ -77,7 +77,7 @@ class ExchangeMoneyResource extends Resource implements HasShieldPermissions
      */
     public static function canEdit(Model $record): bool
     {
-        return $record->exchange_date === null || $record->exchange_date->greaterThanOrEqualTo(today());
+        return parent::canEdit($record) && ($record->exchange_date === null || $record->exchange_date->greaterThanOrEqualTo(today()));
     }
 
     public static function getNavigationLabel(): string

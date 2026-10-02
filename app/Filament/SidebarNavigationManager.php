@@ -43,21 +43,37 @@ class SidebarNavigationManager extends NavigationManager
     {
         $groups = array_values(parent::get());
 
-        $groups = $this->moveStandaloneItemsAfterGroup($groups, __('global.sale'), self::AFTER_SALE_GROUP);
-        $groups = $this->moveStandaloneItemsAfterGroup($groups, __('global.control'), self::AFTER_CONTROL_GROUP);
+        $groups = $this->moveStandaloneItemsAfterGroup($groups, 'global.sale', self::AFTER_SALE_GROUP);
+        $groups = $this->moveStandaloneItemsAfterGroup($groups, 'global.control', self::AFTER_CONTROL_GROUP);
 
         return array_values(array_filter($groups, fn (NavigationGroup $group): bool => filled($group->getItems())));
     }
+
+    /**
+     * Translation keys of the navigation groups, in the order they are registered on the panel.
+     *
+     * @var array<int, string>
+     */
+    public const array GROUP_ORDER = [
+        'global.product',
+        'global.customer',
+        'global.supplier',
+        'global.purchase',
+        'global.inventory_stock',
+        'global.sale',
+        'global.control',
+        'global.setting',
+    ];
 
     /**
      * @param  array<NavigationGroup>  $groups
      * @param  array<int, class-string>  $itemKeys
      * @return array<NavigationGroup>
      */
-    protected function moveStandaloneItemsAfterGroup(array $groups, string $targetLabel, array $itemKeys): array
+    protected function moveStandaloneItemsAfterGroup(array $groups, string $targetKey, array $itemKeys): array
     {
         $standaloneGroup = collect($groups)->first(fn (NavigationGroup $group): bool => blank($group->getLabel()));
-        $targetGroupIndex = collect($groups)->search(fn (NavigationGroup $group): bool => $group->getLabel() === $targetLabel);
+        $targetGroupIndex = $this->findGroupIndexAtOrBefore($groups, $targetKey);
 
         if (! $standaloneGroup || $targetGroupIndex === false) {
             return $groups;
@@ -75,5 +91,25 @@ class SidebarNavigationManager extends NavigationManager
         array_splice($groups, $targetGroupIndex + 1, 0, [NavigationGroup::make()->items($movedItems->values())]);
 
         return $groups;
+    }
+
+    /**
+     * Groups the user cannot see any item of are not built, so fall back to the closest visible group before the target.
+     *
+     * @param  array<NavigationGroup>  $groups
+     */
+    protected function findGroupIndexAtOrBefore(array $groups, string $targetKey): int|false
+    {
+        $candidateLabels = array_reverse(array_slice(self::GROUP_ORDER, 0, array_search($targetKey, self::GROUP_ORDER, true) + 1));
+
+        foreach ($candidateLabels as $key) {
+            $index = collect($groups)->search(fn (NavigationGroup $group): bool => $group->getLabel() === __($key));
+
+            if ($index !== false) {
+                return $index;
+            }
+        }
+
+        return false;
     }
 }

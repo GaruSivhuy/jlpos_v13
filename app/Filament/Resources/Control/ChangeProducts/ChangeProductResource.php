@@ -77,7 +77,7 @@ class ChangeProductResource extends Resource implements HasShieldPermissions
      */
     public static function canEdit(Model $record): bool
     {
-        return (int) $record->submit_status === 0;
+        return parent::canEdit($record) && (int) $record->submit_status === 0;
     }
 
     public static function getNavigationLabel(): string

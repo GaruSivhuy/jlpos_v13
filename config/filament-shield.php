@@ -12,10 +12,15 @@ use App\Filament\Resources\Control\Metrics\MetricResource;
 use App\Filament\Resources\Control\OverMoney\OverMoneyResource;
 use App\Filament\Resources\Control\PaymentGateways\PaymentGatewayResource;
 use App\Filament\Resources\Customers\CustomerResource;
+use App\Filament\Resources\Inventories\InventoryResource;
+use App\Filament\Resources\InventoryAdjustments\InventoryAdjustmentResource;
+use App\Filament\Resources\InventoryTransfers\InventoryTransferResource;
 use App\Filament\Resources\Pricelists\PricelistResource;
 use App\Filament\Resources\Products\ProductResource;
+use App\Filament\Resources\Purchases\PurchaseResource;
 use App\Filament\Resources\Remarks\RemarkResource;
 use App\Filament\Resources\Roles\RoleResource;
+use App\Filament\Resources\Sale\InvoiceResource;
 use App\Filament\Resources\Suppliers\SupplierResource;
 use Filament\Pages\Dashboard;
 use Filament\Widgets\AccountWidget;
@@ -205,6 +210,11 @@ return [
             ExchangeMoneyResource::class => ExchangeMoneyResource::getPermissionPrefixes(),
             ChangeProductResource::class => ChangeProductResource::getPermissionPrefixes(),
             OverMoneyResource::class => OverMoneyResource::getPermissionPrefixes(),
+            InvoiceResource::class => InvoiceResource::getPermissionPrefixes(),
+            PurchaseResource::class => PurchaseResource::getPermissionPrefixes(),
+            InventoryResource::class => InventoryResource::getPermissionPrefixes(),
+            InventoryAdjustmentResource::class => InventoryAdjustmentResource::getPermissionPrefixes(),
+            InventoryTransferResource::class => InventoryTransferResource::getPermissionPrefixes(),
         ],
         'exclude' => [
             //

@@ -7,16 +7,34 @@ use App\Filament\Resources\Sale\Pages\ListInvoices;
 use App\Filament\Resources\Sale\Pages\Pos;
 use App\Models\Invoice;
 use BackedEnum;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Builder;
+use Override;
 use UnitEnum;
 
 use function Filament\Support\original_request;
 
-class InvoiceResource extends Resource
+class InvoiceResource extends Resource implements HasShieldPermissions
 {
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view_any',
+            'view_any_invoice',
+            'view_any_pos',
+            'view_any_invoice_datail',
+            'view',
+            'create',
+            'update',
+            'delete',
+            'change_payment',
+            'cancel'
+        ];
+    }
+
     protected static ?string $model = Invoice::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShoppingCart;
@@ -26,6 +44,18 @@ class InvoiceResource extends Resource
     protected static ?string $slug = 'sale';
 
     protected static ?int $navigationSort = 10;
+
+    /**
+     * The resource hosts the POS, Invoice and Invoice Detail pages, so any one of their permissions opens it.
+     * Each page then checks its own permission.
+     */
+    #[Override]
+    public static function canAccess(): bool
+    {
+        return static::userCan('view_any_pos:invoice')
+            || static::userCan('view_any_invoice:invoice')
+            || static::userCan('view_any_invoice_datail:invoice');
+    }
 
     public static function getNavigationLabel(): string
     {
@@ -55,7 +85,8 @@ class InvoiceResource extends Resource
             ->first()
             ->icon(Heroicon::OutlinedBanknotes)
             ->sort(static::getNavigationSort() + 1)
-            ->isActiveWhen(fn (): bool => original_request()->routeIs($routeBaseName.'.index'));
+            ->isActiveWhen(fn (): bool => original_request()->routeIs($routeBaseName.'.index'))
+            ->visible(fn (): bool => static::userCan('view_any_invoice:invoice'));
 
         return [
             NavigationItem::make(__('global.pos'))
@@ -65,7 +96,7 @@ class InvoiceResource extends Resource
                 ->sort(static::getNavigationSort())
                 ->url(static::getUrl('pos'), shouldOpenInNewTab: true)
                 ->isActiveWhen(fn (): bool => original_request()->routeIs($routeBaseName.'.pos'))
-                ->visible(fn (): bool => static::userCan('sale:menu:pos')),
+                ->visible(fn (): bool => static::userCan('view_any_pos:invoice')),
             $invoiceItem,
             NavigationItem::make(__('global.invoice_detail'))
                 ->key(static::class.'::details')
@@ -74,7 +105,7 @@ class InvoiceResource extends Resource
                 ->sort(static::getNavigationSort() + 2)
                 ->url(static::getUrl('details'))
                 ->isActiveWhen(fn (): bool => original_request()->routeIs($routeBaseName.'.details'))
-                ->visible(fn (): bool => static::userCan('sale:menu:invoice_detail')),
+                ->visible(fn (): bool => static::userCan('view_any_invoice_datail:invoice')),
         ];
     }
 
