@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>{{ $invoice->invoice_code }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}" />
     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Moul&display=swap" rel="stylesheet" />
     <style>
         @page {
