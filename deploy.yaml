@@ -4,11 +4,11 @@ import:
 config:
   repository: 'git@github.com:GaruSivhuy/jlpos_v13.git'
   branch: 'master'
-  keep_releases: 3
+  # keep_releases: 3
 
 hosts:
   jlpos:
-    hostname: 'YOUR_DROPLET_IP'
+    hostname: '139.59.248.243'
     remote_user: sivhuy
     deploy_path: '/var/www/jinglong'
 
