@@ -11,5 +11,5 @@ deploy:
 		exit 1; \
 	fi
 	npm run build
-	rsync -az --delete --chmod=D775,F664 public/build/ $(DEPLOY_HOST):$(DEPLOY_PATH)/public/build/
+	rsync -az --delete public/build/ $(DEPLOY_HOST):$(DEPLOY_PATH)/public/build/
 	ssh $(DEPLOY_HOST) "bash -s -- $(DEPLOY_PATH) $(DEPLOY_BRANCH)" < deploy.sh
