@@ -1,0 +1,27 @@
+import:
+  - recipe/laravel.php
+
+config:
+  repository: 'git@github.com:GaruSivhuy/jlpos_v13.git'
+  branch: 'master'
+  keep_releases: 3
+
+hosts:
+  jlpos:
+    hostname: 'YOUR_DROPLET_IP'
+    remote_user: sivhuy
+    deploy_path: '/var/www/jinglong'
+
+tasks:
+  npm:install:
+    - run: 'cd {{release_path}} && npm install'
+  npm:build:
+    - run: 'cd {{release_path}} && npm run build'
+  deploy:optimize:
+    - run: 'cd {{release_path}} && php artisan filament:optimize'
+
+after:
+  deploy:vendors: npm:install
+  npm:install: npm:build
+  deploy:symlink: deploy:optimize
+  deploy:failed: deploy:unlock
