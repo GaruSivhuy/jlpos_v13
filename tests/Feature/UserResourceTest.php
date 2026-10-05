@@ -119,3 +119,9 @@ it('updates a user without touching the password', function () {
         ->and($user->password)->toBe($originalPassword)
         ->and($user->hasRole('cashier'))->toBeTrue();
 });
+
+it('lets only active users access the admin panel', function (bool $active) {
+    $user = User::factory()->create(['active' => $active]);
+
+    expect($user->canAccessPanel(Filament::getPanel('admin')))->toBe($active);
+})->with([true, false]);
