@@ -283,23 +283,33 @@ class AdminPanelProvider extends PanelProvider
                 PanelsRenderHook::BODY_END,
                 fn () => new HtmlString(<<<'HTML'
                     <script>
-                        function disableNativeValidation() {
-                            document.querySelectorAll('form').forEach(function (form) {
-                                form.setAttribute('novalidate', 'novalidate');
-                            });
-                        }
+                        // SPA navigation re-runs this script on every page, so nothing may be declared globally.
+                        (function () {
+                            function disableNativeValidation() {
+                                document.querySelectorAll('form').forEach(function (form) {
+                                    form.setAttribute('novalidate', 'novalidate');
+                                });
+                            }
 
-                        // Run on initial load
-                        disableNativeValidation();
+                            // Run on every page render
+                            disableNativeValidation();
 
-                        // Re-run after Livewire navigates or updates the DOM
-                        document.addEventListener('livewire:navigated', disableNativeValidation);
-                        document.addEventListener('livewire:load', disableNativeValidation);
-                        document.addEventListener('livewire:update', disableNativeValidation);
+                            if (window.jlposNativeValidationDisabled) {
+                                return;
+                            }
 
-                        // Catch-all: watch for new forms being added dynamically
-                        const observer = new MutationObserver(disableNativeValidation);
-                        observer.observe(document.body, { childList: true, subtree: true });
+                            window.jlposNativeValidationDisabled = true;
+
+                            // Re-run after Livewire navigates or updates the DOM
+                            document.addEventListener('livewire:navigated', disableNativeValidation);
+                            document.addEventListener('livewire:load', disableNativeValidation);
+                            document.addEventListener('livewire:update', disableNativeValidation);
+
+                            // Catch-all: watch for new forms being added dynamically. The body is replaced on
+                            // SPA navigation, so observe the root element, which survives it.
+                            new MutationObserver(disableNativeValidation)
+                                .observe(document.documentElement, { childList: true, subtree: true });
+                        })();
                     </script>
                 HTML),
             )
