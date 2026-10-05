@@ -79,6 +79,7 @@ return [
     'active' => 'សកម្ម',
     'is_admin' => 'អ្នកគ្រប់គ្រង',
     'setting' => 'ការកំណត់',
+    'system_logs' => 'កំណត់ហេតុប្រព័ន្ធ',
     'permission' => 'ការអនុញ្ញាត',
     'permission_menu' => 'មុីនុយការអនុញ្ញាត',
     'roles' => 'តួនាទី',

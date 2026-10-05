@@ -69,6 +69,7 @@ return [
     'active' => 'Active',
     'is_admin' => 'Administrator',
     'setting' => 'Settings',
+    'system_logs' => 'System Logs',
     'permission' => 'Permission',
     'permission_menu' => 'Permission Menu',
     'roles' => 'Role',

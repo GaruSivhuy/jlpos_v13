@@ -20,11 +20,18 @@ main() {
 
     # Installing packages is the slow part, so only do it when the dependencies changed.
     if [ ! -d vendor ] || git diff --name-only "$previous" HEAD | grep -qE '^composer\.(json|lock)$'; then
-        composer install --no-dev --optimize-autoloader --no-interaction
+        # composer.lock is not committed, so the server's own lock is stale once composer.json changes
+        # and `install` would refuse to run. Resolve again instead.
+        if git ls-files --error-unmatch composer.lock >/dev/null 2>&1; then
+            composer install --no-dev --optimize-autoloader --no-interaction
+        else
+            composer update --no-dev --optimize-autoloader --no-interaction
+        fi
     fi
 
     php artisan migrate --force
     php artisan filament:assets
+    php artisan log-viewer:publish
     php artisan optimize
     php artisan filament:optimize
 

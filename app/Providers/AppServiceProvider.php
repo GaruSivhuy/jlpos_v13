@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Filament\SidebarNavigationManager;
+use App\Models\User;
+use BezhanSalleh\FilamentShield\Support\Utils;
 use Carbon\CarbonImmutable;
 use Filament\Navigation\NavigationManager;
 use Filament\Support\Facades\FilamentColor;
@@ -11,6 +13,7 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -111,8 +114,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->configureLogViewerAccess();
 
         $this->app->scoped(NavigationManager::class, fn (): NavigationManager => new SidebarNavigationManager);
+    }
+
+    /**
+     * The log viewer at /log-viewer exposes raw application logs, so only super admins may open it.
+     */
+    protected function configureLogViewerAccess(): void
+    {
+        Gate::define('viewLogViewer', fn (?User $user): bool => (bool) $user?->hasRole(Utils::getSuperAdminName()));
     }
 
     /**
