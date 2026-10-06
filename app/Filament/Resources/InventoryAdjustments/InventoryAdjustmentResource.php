@@ -26,6 +26,7 @@ class InventoryAdjustmentResource extends Resource implements HasShieldPermissio
             "create",
             "update",
             "delete",
+            "submit",
         ];
     }
 

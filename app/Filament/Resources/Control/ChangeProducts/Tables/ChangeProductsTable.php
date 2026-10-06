@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Control\ChangeProducts\Tables;
 
 use App\Filament\Resources\Control\ChangeProducts\ChangeProductResource;
+use App\Filament\Resources\Control\ChangeProducts\Schemas\ChangeProductDetailInfolist;
 use App\Filament\Resources\Control\ChangeProducts\Schemas\ChangeProductForm;
 use App\Filament\Resources\Control\Tables\DateRangeFilter;
 use App\Models\ChangeProduct;
@@ -12,7 +13,11 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Alignment;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
@@ -28,6 +33,7 @@ class ChangeProductsTable
     {
         return $table
             ->defaultSort('id', 'desc')
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('id')
                     ->label(__('global.id'))
@@ -58,10 +64,12 @@ class ChangeProductsTable
                 DateRangeFilter::make('change_product_date'),
                 SelectFilter::make('change_product_type')
                     ->label(__('global.change_product_type'))
+                    ->searchable()
                     ->options(ChangeProductForm::typeOptions()),
+            
             ], layout: FiltersLayout::AboveContent)
             ->filtersFormWidth('4xl')
-            ->filtersFormColumns(1)
+            ->filtersFormColumns(3)
             ->filtersFormMaxHeight('400px')
             ->recordActions([
                 EditAction::make()
@@ -70,6 +78,16 @@ class ChangeProductsTable
                     ->icon(Heroicon::PencilSquare)
                     ->visible(fn (ChangeProduct $record): bool => ChangeProductResource::canEdit($record)),
                 static::getSubmitStockAction(),
+                ViewAction::make()
+                    ->tooltip(__('global.detail'))
+                    ->hiddenLabel()
+                    ->schema(fn (Schema $schema) => ChangeProductDetailInfolist::configure($schema))
+                    ->modalWidth('5xl')
+                    ->modalHeading(__('global.detail'))
+                    ->modalCancelAction(fn ($action) => $action->color('danger'))
+                    ->modalCancelActionLabel(__('global.cancel'))
+                    ->modalFooterActionsAlignment(Alignment::End)
+                    ->slideOver(),
             ], position: RecordActionsPosition::BeforeCells)
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -89,10 +107,14 @@ class ChangeProductsTable
                 && (int) $record->submit_status === 0)
             ->requiresConfirmation()
             ->modalHeading(__('global.submit_stock'))
+            ->modalWidth('5xl')
+            ->schema(fn (Schema $schema) => ChangeProductDetailInfolist::configure($schema))
             ->modalFooterActions(fn ($action) => [
                 $action->getModalSubmitAction()->color('primary'),
                 $action->getModalCancelAction()->color('danger'),
             ])
+            ->modalSubmitActionLabel(__('global.submit'))
+            ->modalCancelActionLabel(__('global.cancel'))
             ->action(function (ChangeProduct $record): void {
                 DB::beginTransaction();
 

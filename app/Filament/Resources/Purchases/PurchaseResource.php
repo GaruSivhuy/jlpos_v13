@@ -28,6 +28,7 @@ class PurchaseResource extends Resource implements HasShieldPermissions
             "create",
             "update",
             "delete",
+            "submit",
         ];
     }
 

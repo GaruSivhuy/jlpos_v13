@@ -25,10 +25,7 @@ class PricelistsTable
                     ->state(function ($record) {
                         return $record->inventory?->pbar_code;
                     })->copyable(),
-                TextColumn::make('name_kh')->label(__('global.product'))->searchable()
-                    ->state(function ($record) {
-                        return $record->inventory?->name_kh;
-                    }),
+                TextColumn::make('inventory.name_kh')->label(__('global.product'))->searchable(),
                 TextColumn::make('metric.name')->label(__('global.mname')),
                 TextColumn::make('price')->label(__('global.price_whole')),
                 TextColumn::make('user_updated.name')->label(__('global.updated_by')),

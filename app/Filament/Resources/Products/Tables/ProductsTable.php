@@ -6,7 +6,6 @@ use App\Filament\Resources\Products\Schemas\ProductDetailForm;
 use App\Filament\Resources\Products\Schemas\ProductForm;
 use App\Models\Category;
 use App\Models\MainCategory;
-use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -20,7 +19,6 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
-use Filament\Support\Enums\Size;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -76,11 +74,12 @@ class ProductsTable
             ->persistFiltersInSession()
             ->searchOnBlur(true)
             ->recordActions([
-                ActionGroup::make([
-                    EditAction::make()
-                    ->label(__("global.edit")),
-                    ViewAction::make()
-                    ->label(__("global.detail"))
+                EditAction::make()
+                    ->tooltip(__("global.edit"))
+                    ->hiddenLabel(),
+                ViewAction::make()
+                    ->tooltip(__("global.detail"))
+                    ->hiddenLabel()
                     ->schema(function(Schema $schema){
                         return ProductDetailForm::configure($schema);
                     })
@@ -90,12 +89,6 @@ class ProductsTable
                     ->modalCancelActionLabel(__("global.cancel"))
                     ->modalFooterActionsAlignment(Alignment::End)
                     ->slideOver(),
-                ])
-                ->label('សកម្មភាព')
-                // ->dropdownWidth('md')
-                ->button()
-                ->icon('heroicon-m-ellipsis-vertical')
-                ->size(Size::Small)
             ], position: RecordActionsPosition::BeforeCells)
             ->toolbarActions([
                 // BulkActionGroup::make([

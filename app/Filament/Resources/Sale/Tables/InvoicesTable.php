@@ -7,12 +7,10 @@ use App\Filament\Resources\Sale\InvoiceResource;
 use App\Models\Invoice;
 use App\Models\PaymentGateway;
 use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
-use Filament\Support\Enums\Size;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Enums\RecordActionsPosition;
@@ -71,17 +69,10 @@ class InvoicesTable
             ->filtersFormColumns(1)
             ->filtersFormMaxHeight('400px')
             ->recordActions([
-                ActionGroup::make([
-                    static::getEditAction(),
-                    static::getReceiptAction(),
-                    static::getChangePaymentAction(),
-                    static::getCancelAction(),
-                ])
-                    ->label('សកម្មភាព')
-                    ->button()
-                    ->icon('heroicon-m-ellipsis-vertical')
-                    ->size(Size::Small)
-                    ->hidden(fn (Invoice $record) => $record->status == Invoice::CANCEL),
+                static::getEditAction(),
+                static::getReceiptAction(),
+                static::getChangePaymentAction(),
+                static::getCancelAction(),
             ], position: RecordActionsPosition::BeforeCells);
     }
 
@@ -102,7 +93,8 @@ class InvoicesTable
     protected static function getEditAction(): Action
     {
         return Action::make('edit')
-            ->label(__('global.edit'))
+            ->tooltip(__('global.edit'))
+            ->hiddenLabel()
             ->icon('heroicon-o-pencil-square')
             ->visible(fn (Invoice $record) => $record->status == Invoice::UNPAID && InvoiceResource::userCan('sale:sale:edit'))
             ->url(fn (Invoice $record) => InvoiceResource::getUrl('pos', ['sale_id' => $record->getRouteKey()]));
@@ -111,8 +103,10 @@ class InvoicesTable
     protected static function getReceiptAction(): Action
     {
         return Action::make('receipt')
-            ->label(__('global.receipt'))
+            ->tooltip(__('global.receipt'))
+            ->hiddenLabel()
             ->icon('heroicon-o-printer')
+            ->hidden(fn (Invoice $record) => $record->status == Invoice::CANCEL)
             ->url(fn (Invoice $record) => route('sale.receipt', ['sale_id' => $record->getRouteKey()]))
             ->openUrlInNewTab();
     }
@@ -120,7 +114,8 @@ class InvoicesTable
     protected static function getChangePaymentAction(): Action
     {
         return Action::make('changePayment')
-            ->label(__('global.change_payment'))
+            ->tooltip(__('global.change_payment'))
+            ->hiddenLabel()
             ->icon('heroicon-o-arrow-path')
             ->visible(fn (Invoice $record) => $record->status == Invoice::PAID && InvoiceResource::userCan('change_payment:invoice'))
             ->modalHeading(__('global.change_payment'))
@@ -147,7 +142,8 @@ class InvoicesTable
     protected static function getCancelAction(): Action
     {
         return Action::make('cancelInvoice')
-            ->label(__('global.cancel_invoice'))
+            ->tooltip(__('global.cancel_invoice'))
+            ->hiddenLabel()
             ->icon('heroicon-o-x-circle')
             ->color('danger')
             ->visible(fn (Invoice $record) => $record->status == Invoice::PAID && InvoiceResource::userCan('cancel:invoice'))

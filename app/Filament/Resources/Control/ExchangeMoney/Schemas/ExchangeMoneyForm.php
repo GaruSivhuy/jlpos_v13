@@ -74,7 +74,7 @@ class ExchangeMoneyForm
                                     ->required()
                                     ->numeric()
                                     ->rule('gt:0')
-                                    ->live(onBlur: true)
+                                    ->live(debounce:500)
                                     ->suffix(fn (Get $get): ?string => match ((int) $get('exchange_type')) {
                                         ExchangeMoney::USD_TO_KHR => '$',
                                         ExchangeMoney::KHR_TO_USD => '៛',
@@ -89,7 +89,7 @@ class ExchangeMoneyForm
                                     ->required()
                                     ->numeric()
                                     ->rule('gt:0')
-                                    ->live(onBlur: true)
+                                    ->live(debounce:500)
                                     ->suffix('៛')
                                     ->afterStateUpdated(fn (Get $get, Set $set) => static::recalculate($get, $set))
                                     ->validationMessages([

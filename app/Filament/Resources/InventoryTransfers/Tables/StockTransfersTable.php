@@ -2,16 +2,18 @@
 
 namespace App\Filament\Resources\InventoryTransfers\Tables;
 
+use App\Filament\Resources\InventoryTransfers\Schemas\StockTransferDetailInfolist;
 use App\Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
-use Filament\Support\Enums\Size;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Alignment;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Enums\RecordActionsPosition;
@@ -49,37 +51,47 @@ class StockTransfersTable
             ->filtersFormColumns(1)
             ->filtersFormMaxHeight('400px')
             ->recordActions([
-                ActionGroup::make([
-                    EditAction::make()
-                        ->label(__('global.edit'))
-                        ->visible(fn ($record) => $record->status == 0),
-                    static::getSubmitStockAction(),
-                ])
-                    ->label('សកម្មភាព')
-                    ->button()
-                    ->icon('heroicon-m-ellipsis-vertical')
-                    ->size(Size::Small),
+                EditAction::make()
+                    ->tooltip(__('global.edit'))
+                    ->hiddenLabel()
+                    ->visible(fn ($record) => $record->status == 0),
+                static::getSubmitStockAction(),
+                ViewAction::make()
+                    ->tooltip(__('global.detail'))
+                    ->hiddenLabel()
+                    ->schema(fn (Schema $schema) => StockTransferDetailInfolist::configure($schema))
+                    ->modalWidth('5xl')
+                    ->modalHeading(__('global.detail'))
+                    ->modalCancelAction(fn ($action) => $action->color('danger'))
+                    ->modalCancelActionLabel(__('global.cancel'))
+                    ->modalFooterActionsAlignment(Alignment::End)
+                    ->slideOver(),
             ], position: RecordActionsPosition::BeforeCells)
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                // BulkActionGroup::make([
+                //     DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
     protected static function getSubmitStockAction(): Action
     {
         return Action::make('submit')
-            ->label(__('global.submit_stock'))
+            ->tooltip(__('global.submit_stock'))
+            ->hiddenLabel()
             ->icon('heroicon-o-shopping-cart')
             ->color('success')
-            ->visible(fn ($record) => $record->status == 0 && $record->stockTransferDetails()->exists())
+            ->visible(fn ($record) =>   auth()->user()->can('submit:stock_transfer') && ($record->status == 0 && $record->stockTransferDetails()->exists()))
             ->requiresConfirmation()
             ->modalHeading(__('global.submit_stock'))
+            ->modalWidth('5xl')
+            ->schema(fn (Schema $schema) => StockTransferDetailInfolist::configure($schema))
             ->modalFooterActions(fn ($action) => [
                 $action->getModalSubmitAction()->color('primary'),
                 $action->getModalCancelAction()->color('danger'),
             ])
+            ->modalSubmitActionLabel(__('global.submit'))
+            ->modalCancelActionLabel(__('global.cancel'))
             ->action(function ($record) {
                 DB::beginTransaction();
 
