@@ -36,6 +36,7 @@ class CreateExchangeMoney extends ControlCreateRecord
     {
         return [
             $this->getCancelFormAction(),
+            $this->getCreateAnotherFormAction(),
             $this->getCreateAndPrintFormAction(),
             $this->getSubmitFormAction(),
         ];

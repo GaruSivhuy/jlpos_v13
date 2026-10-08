@@ -23,15 +23,6 @@ class CreateChangeProduct extends ControlCreateRecord
         return $data;
     }
 
-    protected function getFormActions(): array
-    {
-        return [
-            $this->getCancelFormAction(),
-            $this->getCreateAnotherFormAction(),
-            $this->getSubmitFormAction(),
-        ];
-    }
-
     public function getTitle(): string|Htmlable
     {
         return __('global.create').' '.__('global.change_product');

@@ -21,6 +21,7 @@ class CreateServiceFee extends ControlCreateRecord
     {
         return [
             $this->getCancelFormAction(),
+            $this->getCreateAnotherFormAction(),
             $this->getCreateAndPrintFormAction(),
             $this->getSubmitFormAction(),
         ];
