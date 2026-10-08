@@ -100,6 +100,10 @@
                 <td class="battambang">&nbsp;</td>
                 <td class="battambang txt_right">{{ __('global.service_fees') }} = {{ number_format($serviceFee->service_fees, 2) }}</td>
             </tr>
+            <tr valign="center">
+                <td class="battambang">&nbsp;</td>
+                <td class="battambang txt_right">{{ __('global.payment_gateway') }} = {{ $serviceFee->paymentGateway?->name }}</td>
+            </tr>
         </table>
         <hr>
     </div>

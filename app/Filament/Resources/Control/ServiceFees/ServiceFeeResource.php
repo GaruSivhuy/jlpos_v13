@@ -68,7 +68,7 @@ class ServiceFeeResource extends Resource implements HasShieldPermissions
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->with(['user_create', 'user_updated']);
+            ->with(['user_create', 'user_updated', 'paymentGateway']);
     }
 
     /**

@@ -178,6 +178,7 @@ class ReportsPrintController extends Controller
     protected function serviceFeeQuery(string $fromDate, string $toDate, mixed $userId, mixed $branchId): Builder
     {
         return ServiceFee::query()
+            ->with('paymentGateway')
             ->branch()
             ->whereDate('created_at', '>=', $fromDate)
             ->whereDate('created_at', '<=', $toDate)

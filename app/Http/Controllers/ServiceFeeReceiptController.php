@@ -13,7 +13,7 @@ class ServiceFeeReceiptController extends Controller
     public function __invoke(Request $request): View
     {
         $serviceFee = ServiceFee::query()
-            ->with('user_create')
+            ->with(['user_create', 'paymentGateway'])
             ->findOrFail($request->query('id'));
 
         return view('control.service-fee-receipt', [

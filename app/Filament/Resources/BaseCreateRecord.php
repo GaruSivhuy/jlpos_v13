@@ -22,6 +22,11 @@ class BaseCreateRecord extends CreateRecord
                   ->send();
       }
 
+      protected function getRedirectUrl(): string
+      {
+            return $this->getResource()::getUrl('index');
+      }
+
       protected function getFormActions(): array
       {
             return [

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Control\ServiceFees\Schemas;
 
 use App\Filament\Resources\Control\Schemas\BranchSelect;
+use App\Models\PaymentGateway;
 use App\Models\ServiceFee;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -50,6 +51,18 @@ class ServiceFeeForm
                                     })
                                     ->validationMessages([
                                         'required' => __('validation.required', ['attribute' => __('global.service_type')]),
+                                    ]),
+                                
+                                Select::make('payment_type')
+                                    ->label(__('global.payment_gateway'))
+                                    ->required()
+                                    ->searchable()
+                                    ->options(fn (Get $get): array => PaymentGateway::query()
+                                        ->when($get('branch_id'), fn ($query, $branchId) => $query->where('branch_id', $branchId))
+                                        ->pluck('name', 'id')
+                                        ->all())
+                                    ->validationMessages([
+                                        'required' => __('validation.required', ['attribute' => __('global.payment_gateway')]),
                                     ]),
                                 TextInput::make('amount')
                                     ->label(__('global.amount'))

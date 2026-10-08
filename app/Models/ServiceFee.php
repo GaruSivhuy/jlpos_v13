@@ -24,6 +24,7 @@ class ServiceFee extends Model
         'amount',
         'service_type',
         'service_fees',
+        'payment_type',
         'user_id',
         'user_update',
         'branch_id',
@@ -54,6 +55,11 @@ class ServiceFee extends Model
     public function user_updated()
     {
         return $this->belongsTo(User::class, 'user_update');
+    }
+
+    public function paymentGateway()
+    {
+        return $this->belongsTo(PaymentGateway::class, 'payment_type');
     }
 
     public function scopeBranch($query)

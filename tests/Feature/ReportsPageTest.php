@@ -3,6 +3,7 @@
 use App\Filament\Pages\Reports;
 use App\Models\Branch;
 use App\Models\OverMoney;
+use App\Models\PaymentGateway;
 use App\Models\ServiceFee;
 use App\Models\User;
 use Filament\Facades\Filament;
@@ -188,12 +189,24 @@ it('prints an over money report grouped by date and type', function () {
         ->assertSee('100.00');
 });
 
-it('prints a service fee report grouped by date and type with the totals of each type', function () {
+it('prints a service fee report grouped by date, payment type and service type with the totals of each', function () {
     config(['app.env' => 'local']);
 
-    ServiceFee::create(['amount' => 100, 'service_fees' => 2000, 'service_type' => ServiceFee::TYPE_USD, 'branch_id' => $this->branch->id]);
-    ServiceFee::create(['amount' => 50, 'service_fees' => 1000, 'service_type' => ServiceFee::TYPE_USD, 'branch_id' => $this->branch->id]);
-    ServiceFee::create(['amount' => 40000, 'service_fees' => 500, 'service_type' => ServiceFee::TYPE_RIEL, 'branch_id' => $this->branch->id]);
+    createReportsLegacyTable('payment_gateway', function (Blueprint $table) {
+        $table->increments('id');
+        $table->string('name');
+        $table->integer('branch_id')->nullable();
+        $table->integer('user_id')->nullable();
+        $table->timestamps();
+    });
+
+    $aba = PaymentGateway::create(['name' => 'ABA', 'branch_id' => $this->branch->id]);
+    $cash = PaymentGateway::create(['name' => 'Cash', 'branch_id' => $this->branch->id]);
+
+    ServiceFee::create(['amount' => 100, 'service_fees' => 2000, 'service_type' => ServiceFee::TYPE_USD, 'payment_type' => $aba->id, 'branch_id' => $this->branch->id]);
+    ServiceFee::create(['amount' => 50, 'service_fees' => 1000, 'service_type' => ServiceFee::TYPE_USD, 'payment_type' => $aba->id, 'branch_id' => $this->branch->id]);
+    ServiceFee::create(['amount' => 25, 'service_fees' => 700, 'service_type' => ServiceFee::TYPE_USD, 'payment_type' => $cash->id, 'branch_id' => $this->branch->id]);
+    ServiceFee::create(['amount' => 40000, 'service_fees' => 500, 'service_type' => ServiceFee::TYPE_RIEL, 'payment_type' => $cash->id, 'branch_id' => $this->branch->id]);
 
     $this->get(route('reports.print', [
         'report_type' => 'rpt_service_fee',
@@ -202,9 +215,7 @@ it('prints a service fee report grouped by date and type with the totals of each
     ]))
         ->assertOk()
         ->assertSee(today()->format('d-m-Y'))
-        ->assertSee('150.00 $')
-        ->assertSee('3,000 ៛')
-        ->assertSee('40,000 ៛');
+        ->assertSeeInOrder(['ABA', '150.00 $', '3,000 ៛', 'Cash', '25.00 $', '700 ៛', '40,000 ៛']);
 });
 
 it('rejects an unknown report type on the print route', function () {

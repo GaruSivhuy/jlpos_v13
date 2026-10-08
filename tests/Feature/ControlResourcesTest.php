@@ -34,6 +34,7 @@ use App\Models\Location;
 use App\Models\MainCategory;
 use App\Models\Metric;
 use App\Models\OverMoney;
+use App\Models\PaymentGateway;
 use App\Models\ServiceFee;
 use App\Models\User;
 use Filament\Actions\Testing\TestAction;
@@ -577,9 +578,13 @@ describe('exchange money', function () {
 });
 
 describe('service fees', function () {
+    beforeEach(function () {
+        $this->gateway = PaymentGateway::create(['name' => 'ABA', 'branch_id' => $this->branch->id]);
+    });
+
     it('creates a service fee stamped with the creating user', function () {
         Livewire::test(CreateServiceFee::class)
-            ->fillForm(['branch_id' => $this->branch->id, 'service_type' => ServiceFee::TYPE_USD, 'amount' => 100, 'service_fees' => 1.5])
+            ->fillForm(['branch_id' => $this->branch->id, 'service_type' => ServiceFee::TYPE_USD, 'amount' => 100, 'service_fees' => 1.5, 'payment_type' => $this->gateway->id])
             ->call('create')
             ->assertHasNoFormErrors();
 
@@ -588,20 +593,21 @@ describe('service fees', function () {
         expect($serviceFee->amount)->toBe(100.0)
             ->and($serviceFee->service_fees)->toBe(1.5)
             ->and($serviceFee->service_type)->toBe(ServiceFee::TYPE_USD)
+            ->and($serviceFee->payment_type)->toBe($this->gateway->id)
             ->and($serviceFee->user_id)->toBe($this->admin->id)
             ->and($serviceFee->user_update)->toBe($this->admin->id);
     });
 
     it('requires the type, a positive amount and a positive fee', function () {
         Livewire::test(CreateServiceFee::class)
-            ->fillForm(['service_type' => null, 'amount' => 0, 'service_fees' => 0])
+            ->fillForm(['service_type' => null, 'amount' => 0, 'service_fees' => 0, 'payment_type' => null])
             ->call('create')
-            ->assertHasFormErrors(['service_type', 'amount', 'service_fees']);
+            ->assertHasFormErrors(['service_type', 'amount', 'service_fees', 'payment_type']);
     });
 
     it('opens the receipt in a new tab and goes back to the list when creating with print', function () {
         $component = Livewire::test(CreateServiceFee::class)
-            ->fillForm(['branch_id' => $this->branch->id, 'service_type' => ServiceFee::TYPE_RIEL, 'amount' => 50, 'service_fees' => 1])
+            ->fillForm(['branch_id' => $this->branch->id, 'service_type' => ServiceFee::TYPE_RIEL, 'amount' => 50, 'service_fees' => 1, 'payment_type' => $this->gateway->id])
             ->call('createAndPrint')
             ->assertHasNoFormErrors();
 
@@ -612,8 +618,8 @@ describe('service fees', function () {
     });
 
     it('only lets admins edit a service fee made before today', function () {
-        $today = ServiceFee::create(['amount' => 10, 'service_fees' => 1, 'service_type' => ServiceFee::TYPE_USD, 'branch_id' => $this->branch->id]);
-        $past = ServiceFee::create(['amount' => 10, 'service_fees' => 1, 'service_type' => ServiceFee::TYPE_USD, 'branch_id' => $this->branch->id]);
+        $today = ServiceFee::create(['amount' => 10, 'service_fees' => 1, 'service_type' => ServiceFee::TYPE_USD, 'payment_type' => $this->gateway->id, 'branch_id' => $this->branch->id]);
+        $past = ServiceFee::create(['amount' => 10, 'service_fees' => 1, 'service_type' => ServiceFee::TYPE_USD, 'payment_type' => $this->gateway->id, 'branch_id' => $this->branch->id]);
         $past->forceFill(['created_at' => now()->subDay()])->saveQuietly();
 
         Livewire::test(EditServiceFee::class, ['record' => $today->getKey()])

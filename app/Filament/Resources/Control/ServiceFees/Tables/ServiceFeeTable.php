@@ -35,6 +35,7 @@ class ServiceFeeTable
                 TextColumn::make('service_fees')
                     ->label(__('global.service_fees'))
                     ->formatStateUsing(fn ($state): ?string => $state === null ? null : number_format($state, 2)),
+                TextColumn::make('paymentGateway.name')->label(__('global.payment_gateway')),
                 TextColumn::make('user_create.name')->label(__('global.created_by')),
                 TextColumn::make('user_updated.name')->label(__('global.updated_by')),
                 TextColumn::make('created_at')->label(__('global.created_at'))->dateTime('d-m-Y H:i:s')->sortable(),

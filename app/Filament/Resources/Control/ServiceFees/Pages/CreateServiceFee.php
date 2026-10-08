@@ -52,15 +52,6 @@ class CreateServiceFee extends ControlCreateRecord
         }
     }
 
-    protected function getRedirectUrl(): string
-    {
-        if ($this->printAfterCreate) {
-            return $this->getResourceUrl('index');
-        }
-
-        return parent::getRedirectUrl();
-    }
-
     public function getTitle(): string|Htmlable
     {
         return __('global.create').' '.__('global.service_fee');

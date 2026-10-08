@@ -16,41 +16,49 @@
                 </td>
             </tr>
 
-            @foreach ($dayRows->groupBy('service_type') as $serviceType => $rows)
-                @php
-                    $isUsd = (int) $serviceType === \App\Models\ServiceFee::TYPE_USD;
-                    $typeLabel = $isUsd ? __('global.service_type_usd') : __('global.service_type_riel');
-                    $subTotalAmount = $rows->sum('amount');
-                    $subTotalFees = $rows->sum('service_fees');
-                @endphp
+            @foreach ($dayRows->groupBy('payment_type') as $paymentRows)
                 <tr>
                     <td class="content_regular txt_left txt_bold" colspan="4">
-                        {{ __('global.service_type') }} : {{ $typeLabel }}
+                        {{ __('global.payment_gateway') }} : {{ $paymentRows->first()->paymentGateway?->name }}
                     </td>
                 </tr>
-                <tr>
-                    <td width="10%" class="khmer_moul_title_1">ល.រ</td>
-                    <td width="30%" class="khmer_moul_title_1">{{ __('global.service_type') }}</td>
-                    <td width="30%" class="khmer_moul_title_1">{{ __('global.amount') }}</td>
-                    <td width="30%" class="khmer_moul_title_1">{{ __('global.service_fees') }}</td>
-                </tr>
-                @foreach ($rows->values() as $key => $item)
+
+                @foreach ($paymentRows->groupBy('service_type') as $serviceType => $rows)
+                    @php
+                        $isUsd = (int) $serviceType === \App\Models\ServiceFee::TYPE_USD;
+                        $typeLabel = $isUsd ? __('global.service_type_usd') : __('global.service_type_riel');
+                        $subTotalAmount = $rows->sum('amount');
+                        $subTotalFees = $rows->sum('service_fees');
+                    @endphp
                     <tr>
-                        <td class="content_regular">{{ $key + 1 }}</td>
-                        <td class="content_regular">{{ $typeLabel }}</td>
-                        <td class="content_regular">
-                            {{ $isUsd ? number_format($item->amount, 2).' $' : number_format($item->amount).' ៛' }}
+                        <td class="content_regular txt_left txt_bold" colspan="4">
+                            {{ __('global.service_type') }} : {{ $typeLabel }}
                         </td>
-                        <td class="content_regular">{{ number_format($item->service_fees) }} ៛</td>
+                    </tr>
+                    <tr>
+                        <td width="10%" class="khmer_moul_title_1">ល.រ</td>
+                        <td width="30%" class="khmer_moul_title_1">{{ __('global.service_type') }}</td>
+                        <td width="30%" class="khmer_moul_title_1">{{ __('global.amount') }}</td>
+                        <td width="30%" class="khmer_moul_title_1">{{ __('global.service_fees') }}</td>
+                    </tr>
+                    @foreach ($rows->values() as $key => $item)
+                        <tr>
+                            <td class="content_regular">{{ $key + 1 }}</td>
+                            <td class="content_regular">{{ $typeLabel }}</td>
+                            <td class="content_regular">
+                                {{ $isUsd ? number_format($item->amount, 2).' $' : number_format($item->amount).' ៛' }}
+                            </td>
+                            <td class="content_regular">{{ number_format($item->service_fees) }} ៛</td>
+                        </tr>
+                    @endforeach
+                    <tr>
+                        <td class="content_regular txt_right txt_bold" colspan="2">{{ __('global.total_amount') }}</td>
+                        <td class="content_regular txt_bold">
+                            {{ $isUsd ? number_format($subTotalAmount, 2).' $' : number_format($subTotalAmount).' ៛' }}
+                        </td>
+                        <td class="content_regular txt_bold">{{ number_format($subTotalFees) }} ៛</td>
                     </tr>
                 @endforeach
-                <tr>
-                    <td class="content_regular txt_right txt_bold" colspan="2">{{ __('global.total_amount') }}</td>
-                    <td class="content_regular txt_bold">
-                        {{ $isUsd ? number_format($subTotalAmount, 2).' $' : number_format($subTotalAmount).' ៛' }}
-                    </td>
-                    <td class="content_regular txt_bold">{{ number_format($subTotalFees) }} ៛</td>
-                </tr>
             @endforeach
         @empty
             <tr>
