@@ -16,6 +16,7 @@ use App\Models\OverMoney;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Remark;
+use App\Models\ServiceFee;
 use App\Models\StockTransfer;
 use App\Models\Supplier;
 use App\Models\User;
@@ -71,6 +72,9 @@ class Hashidable
 
         'filament.admin.resources.remarks.view' => Remark::class,
         'filament.admin.resources.remarks.edit' => Remark::class,
+
+        'filament.admin.resources.service-fees.view' => ServiceFee::class,
+        'filament.admin.resources.service-fees.edit' => ServiceFee::class,
 
         'filament.admin.resources.suppliers.view' => Supplier::class,
         'filament.admin.resources.suppliers.edit' => Supplier::class,

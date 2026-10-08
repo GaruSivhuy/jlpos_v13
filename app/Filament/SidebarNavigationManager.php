@@ -6,6 +6,7 @@ use App\Filament\Pages\Reports;
 use App\Filament\Resources\Control\ChangeProducts\ChangeProductResource;
 use App\Filament\Resources\Control\ExchangeMoney\ExchangeMoneyResource;
 use App\Filament\Resources\Control\OverMoney\OverMoneyResource;
+use App\Filament\Resources\Control\ServiceFees\ServiceFeeResource;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Navigation\NavigationManager;
@@ -25,6 +26,7 @@ class SidebarNavigationManager extends NavigationManager
         ExchangeMoneyResource::class,
         ChangeProductResource::class,
         OverMoneyResource::class,
+        ServiceFeeResource::class,
     ];
 
     /**

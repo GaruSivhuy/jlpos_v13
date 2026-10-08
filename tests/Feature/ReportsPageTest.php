@@ -3,6 +3,7 @@
 use App\Filament\Pages\Reports;
 use App\Models\Branch;
 use App\Models\OverMoney;
+use App\Models\ServiceFee;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Filament\Schemas\Schema;
@@ -185,6 +186,25 @@ it('prints an over money report grouped by date and type', function () {
         ->assertOk()
         ->assertSee(today()->format('d-m-Y'))
         ->assertSee('100.00');
+});
+
+it('prints a service fee report grouped by date and type with the totals of each type', function () {
+    config(['app.env' => 'local']);
+
+    ServiceFee::create(['amount' => 100, 'service_fees' => 2000, 'service_type' => ServiceFee::TYPE_USD, 'branch_id' => $this->branch->id]);
+    ServiceFee::create(['amount' => 50, 'service_fees' => 1000, 'service_type' => ServiceFee::TYPE_USD, 'branch_id' => $this->branch->id]);
+    ServiceFee::create(['amount' => 40000, 'service_fees' => 500, 'service_type' => ServiceFee::TYPE_RIEL, 'branch_id' => $this->branch->id]);
+
+    $this->get(route('reports.print', [
+        'report_type' => 'rpt_service_fee',
+        'from_date' => today()->toDateString(),
+        'to_date' => today()->toDateString(),
+    ]))
+        ->assertOk()
+        ->assertSee(today()->format('d-m-Y'))
+        ->assertSee('150.00 $')
+        ->assertSee('3,000 ៛')
+        ->assertSee('40,000 ៛');
 });
 
 it('rejects an unknown report type on the print route', function () {

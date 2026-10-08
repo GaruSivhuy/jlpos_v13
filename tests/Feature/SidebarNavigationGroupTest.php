@@ -4,6 +4,7 @@ use App\Filament\Pages\Reports;
 use App\Filament\Resources\Control\ChangeProducts\ChangeProductResource;
 use App\Filament\Resources\Control\ExchangeMoney\ExchangeMoneyResource;
 use App\Filament\Resources\Control\OverMoney\OverMoneyResource;
+use App\Filament\Resources\Control\ServiceFees\ServiceFeeResource;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationGroup;
@@ -42,7 +43,7 @@ it('keeps the sale group in its dropdown items', function () {
         ->and($sale->getItems())->not->toBeEmpty();
 });
 
-it('renders exchange money, change products and over money as standalone items right after the sale group, in that order', function () {
+it('renders exchange money, change products, over money and service fees as standalone items right after the sale group, in that order', function () {
     $this->actingAs(User::factory()->create(['is_admin' => 1]));
 
     $navigation = collect(Filament::getNavigation())->values();
@@ -52,18 +53,21 @@ it('renders exchange money, change products and over money as standalone items r
     expect(ExchangeMoneyResource::getNavigationGroup())->toBeNull()
         ->and(ChangeProductResource::getNavigationGroup())->toBeNull()
         ->and(OverMoneyResource::getNavigationGroup())->toBeNull()
+        ->and(ServiceFeeResource::getNavigationGroup())->toBeNull()
         ->and($standalone->getLabel())->toBeNull()
         ->and(collect($standalone->getItems())->map->getKey()->all())->toBe([
             ExchangeMoneyResource::class,
             ChangeProductResource::class,
             OverMoneyResource::class,
+            ServiceFeeResource::class,
         ]);
 
     $keysBeforeSale = $navigation->take($saleIndex)->flatMap(fn (NavigationGroup $group) => collect($group->getItems())->map->getKey());
 
     expect($keysBeforeSale)->not->toContain(ExchangeMoneyResource::class)
         ->and($keysBeforeSale)->not->toContain(ChangeProductResource::class)
-        ->and($keysBeforeSale)->not->toContain(OverMoneyResource::class);
+        ->and($keysBeforeSale)->not->toContain(OverMoneyResource::class)
+        ->and($keysBeforeSale)->not->toContain(ServiceFeeResource::class);
 });
 
 it('renders the reports page as a standalone item right after the control group', function () {

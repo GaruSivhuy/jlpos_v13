@@ -15,6 +15,7 @@ use App\Models\OverMoney;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Remark;
+use App\Models\ServiceFee;
 use App\Models\StockTransfer;
 use App\Models\Supplier;
 use App\Models\User;
@@ -97,6 +98,12 @@ return [
 
         Customer::class => [
             'salt' => Customer::class.env('APP_KEY'),
+            'length' => 12,
+            'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
+        ],
+
+        ServiceFee::class => [
+            'salt' => ServiceFee::class.env('APP_KEY'),
             'length' => 12,
             'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
         ],

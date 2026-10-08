@@ -102,10 +102,6 @@
         @endif
     </table>
 
-    <script>
-        window.addEventListener('load', function () {
-            window.print();
-        });
-    </script>
+    @include('reports.partials.print-script')
 </body>
 </html>

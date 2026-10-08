@@ -11,6 +11,7 @@ use App\Filament\Resources\Control\MainCategories\MainCategoryResource;
 use App\Filament\Resources\Control\Metrics\MetricResource;
 use App\Filament\Resources\Control\OverMoney\OverMoneyResource;
 use App\Filament\Resources\Control\PaymentGateways\PaymentGatewayResource;
+use App\Filament\Resources\Control\ServiceFees\ServiceFeeResource;
 use App\Filament\Resources\Customers\CustomerResource;
 use App\Filament\Resources\Inventories\InventoryResource;
 use App\Filament\Resources\InventoryAdjustments\InventoryAdjustmentResource;
@@ -210,6 +211,7 @@ return [
             ExchangeMoneyResource::class => ExchangeMoneyResource::getPermissionPrefixes(),
             ChangeProductResource::class => ChangeProductResource::getPermissionPrefixes(),
             OverMoneyResource::class => OverMoneyResource::getPermissionPrefixes(),
+            ServiceFeeResource::class => ServiceFeeResource::getPermissionPrefixes(),
             InvoiceResource::class => InvoiceResource::getPermissionPrefixes(),
             PurchaseResource::class => PurchaseResource::getPermissionPrefixes(),
             InventoryResource::class => InventoryResource::getPermissionPrefixes(),

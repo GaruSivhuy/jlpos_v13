@@ -7,6 +7,7 @@ use App\Models\ExchangeMoney;
 use App\Models\Invoice;
 use App\Models\MainCategory;
 use App\Models\OverMoney;
+use App\Models\ServiceFee;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,6 +31,7 @@ class ReportsPrintController extends Controller
         'rpt_exchange_money',
         'rpt_over_money',
         'rpt_exchange_product',
+        'rpt_service_fee',
     ];
 
     public function __invoke(Request $request): View
@@ -101,6 +103,12 @@ class ReportsPrintController extends Controller
                 'toDate' => $toDate,
                 'cashier' => $cashier,
             ]),
+            'rpt_service_fee' => view('reports.service-fee', [
+                'results' => $this->serviceFeeQuery($fromDate, $toDate, $userId, $branchId)->get(),
+                'fromDate' => $fromDate,
+                'toDate' => $toDate,
+                'cashier' => $cashier,
+            ]),
         };
     }
 
@@ -162,5 +170,19 @@ class ReportsPrintController extends Controller
             ->whereDate('change_product_date', '<=', $toDate)
             ->when($userId, fn (Builder $query) => $query->where('user_id', $userId))
             ->when($branchId, fn (Builder $query) => $query->where('branch_id', $branchId));
+    }
+
+    /**
+     * Service fees have no date of their own, so they are reported by the day they were created.
+     */
+    protected function serviceFeeQuery(string $fromDate, string $toDate, mixed $userId, mixed $branchId): Builder
+    {
+        return ServiceFee::query()
+            ->branch()
+            ->whereDate('created_at', '>=', $fromDate)
+            ->whereDate('created_at', '<=', $toDate)
+            ->when($userId, fn (Builder $query) => $query->where('user_id', $userId))
+            ->when($branchId, fn (Builder $query) => $query->where('branch_id', $branchId))
+            ->orderBy('created_at');
     }
 }

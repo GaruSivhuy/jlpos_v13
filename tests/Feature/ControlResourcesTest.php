@@ -21,6 +21,10 @@ use App\Filament\Resources\Control\OverMoney\Pages\CreateOverMoney;
 use App\Filament\Resources\Control\OverMoney\Pages\EditOverMoney;
 use App\Filament\Resources\Control\OverMoney\Pages\ListOverMoney;
 use App\Filament\Resources\Control\PaymentGateways\Pages\CreatePaymentGateway;
+use App\Filament\Resources\Control\ServiceFees\Pages\CreateServiceFee;
+use App\Filament\Resources\Control\ServiceFees\Pages\EditServiceFee;
+use App\Filament\Resources\Control\ServiceFees\Pages\ListServiceFees;
+use App\Filament\Resources\Control\ServiceFees\ServiceFeeResource;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\ChangeProduct;
@@ -30,6 +34,7 @@ use App\Models\Location;
 use App\Models\MainCategory;
 use App\Models\Metric;
 use App\Models\OverMoney;
+use App\Models\ServiceFee;
 use App\Models\User;
 use Filament\Actions\Testing\TestAction;
 use Filament\Facades\Filament;
@@ -568,6 +573,80 @@ describe('exchange money', function () {
         $this->actingAs($user)
             ->get(route('exchange-money.receipt', ['id' => $exchange->id]))
             ->assertNotFound();
+    });
+});
+
+describe('service fees', function () {
+    it('creates a service fee stamped with the creating user', function () {
+        Livewire::test(CreateServiceFee::class)
+            ->fillForm(['branch_id' => $this->branch->id, 'service_type' => ServiceFee::TYPE_USD, 'amount' => 100, 'service_fees' => 1.5])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $serviceFee = ServiceFee::firstOrFail();
+
+        expect($serviceFee->amount)->toBe(100.0)
+            ->and($serviceFee->service_fees)->toBe(1.5)
+            ->and($serviceFee->service_type)->toBe(ServiceFee::TYPE_USD)
+            ->and($serviceFee->user_id)->toBe($this->admin->id)
+            ->and($serviceFee->user_update)->toBe($this->admin->id);
+    });
+
+    it('requires the type, a positive amount and a positive fee', function () {
+        Livewire::test(CreateServiceFee::class)
+            ->fillForm(['service_type' => null, 'amount' => 0, 'service_fees' => 0])
+            ->call('create')
+            ->assertHasFormErrors(['service_type', 'amount', 'service_fees']);
+    });
+
+    it('opens the receipt in a new tab and goes back to the list when creating with print', function () {
+        $component = Livewire::test(CreateServiceFee::class)
+            ->fillForm(['branch_id' => $this->branch->id, 'service_type' => ServiceFee::TYPE_RIEL, 'amount' => 50, 'service_fees' => 1])
+            ->call('createAndPrint')
+            ->assertHasNoFormErrors();
+
+        expect(ServiceFee::count())->toBe(1)
+            ->and($component->effects['xjs'][0]['expression'])->toContain('window.open(')
+            ->and($component->effects['xjs'][0]['expression'])->toContain('receipt?id=1')
+            ->and($component->effects['redirect'])->toBe(ServiceFeeResource::getUrl('index'));
+    });
+
+    it('only lets admins edit a service fee made before today', function () {
+        $today = ServiceFee::create(['amount' => 10, 'service_fees' => 1, 'service_type' => ServiceFee::TYPE_USD, 'branch_id' => $this->branch->id]);
+        $past = ServiceFee::create(['amount' => 10, 'service_fees' => 1, 'service_type' => ServiceFee::TYPE_USD, 'branch_id' => $this->branch->id]);
+        $past->forceFill(['created_at' => now()->subDay()])->saveQuietly();
+
+        Livewire::test(EditServiceFee::class, ['record' => $today->getKey()])
+            ->fillForm(['service_fees' => 2])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        expect($today->refresh()->service_fees)->toBe(2.0)
+            ->and($today->user_update)->toBe($this->admin->id);
+
+        // Admins may still correct an older service fee.
+        Livewire::test(ListServiceFees::class)
+            ->assertActionVisible(TestAction::make('edit')->table($past));
+
+        $this->actingAs(User::factory()->create(['is_admin' => 0]));
+
+        Livewire::test(EditServiceFee::class, ['record' => $past->getKey()])->assertForbidden();
+
+        Livewire::test(ListServiceFees::class)
+            ->assertActionVisible(TestAction::make('edit')->table($today))
+            ->assertActionHidden(TestAction::make('edit')->table($past));
+    });
+
+    it('prints a receipt with the amount and the fee', function () {
+        $serviceFee = ServiceFee::create(['amount' => 1250, 'service_fees' => 2.5, 'service_type' => ServiceFee::TYPE_RIEL, 'branch_id' => $this->branch->id]);
+
+        // Filament only lets users that are not `FilamentUser`s through its auth middleware locally.
+        config(['app.env' => 'local']);
+
+        $this->get(route('service-fee.receipt', ['id' => $serviceFee->id]))
+            ->assertOk()
+            ->assertSee('1,250.00')
+            ->assertSee('2.50');
     });
 });
 

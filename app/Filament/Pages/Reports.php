@@ -186,6 +186,9 @@ class Reports extends Page
                 'rpt_exchange_money' => __('global.report_exchange_money'),
                 'rpt_over_money' => __('global.report_over_money'),
             ],
+            __('global.report_group_service_fee') => [
+                'rpt_service_fee' => __('global.report_service_fee'),
+            ],
             __('global.report_group_change_product') => [
                 'rpt_exchange_product' => __('global.report_exchange_product'),
             ],
