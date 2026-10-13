@@ -81,7 +81,7 @@ class StockTransfersTable
             ->hiddenLabel()
             ->icon('heroicon-o-shopping-cart')
             ->color('success')
-            ->visible(fn ($record) =>   auth()->user()->can('submit:stock_transfer') && ($record->status == 0 && $record->stockTransferDetails()->exists()))
+            ->visible(fn ($record) => auth()->user()->can('submit:stock_transfer') && ($record->status == 0 && $record->stockTransferDetails()->exists()))
             ->requiresConfirmation()
             ->modalHeading(__('global.submit_stock'))
             ->modalWidth('5xl')
@@ -150,12 +150,14 @@ class StockTransfersTable
                     ->schema([
                         DatePicker::make('from_date')
                             ->label(__('global.from_date'))
+                            ->default(fn () => now()->subMonth()->toDateString())
                             ->native(false)
                             ->suffixIcon('heroicon-o-calendar')
                             ->displayFormat('d-m-Y')
                             ->placeholder('DD-MM-YYYY'),
                         DatePicker::make('to_date')
                             ->label(__('global.to_date'))
+                            ->default(fn () => now()->toDateString())
                             ->native(false)
                             ->suffixIcon('heroicon-o-calendar')
                             ->displayFormat('d-m-Y')

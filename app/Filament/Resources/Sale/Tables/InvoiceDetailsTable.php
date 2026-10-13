@@ -29,7 +29,9 @@ class InvoiceDetailsTable
                 InvoiceItem::query()
                     ->with(['invoice', 'product', 'metric'])
                     ->where('invoice_items.status', InvoiceItem::PAID)
-                    ->whereHas('invoice', fn (Builder $invoice) => $invoice->branch())
+                    // Without the hint MySQL turns this into a semijoin that scans every invoice before sorting,
+                    // instead of walking the newest items and checking their invoice.
+                    ->whereHas('invoice', fn (Builder $invoice) => $invoice->branch()->select(DB::raw('/*+ NO_SEMIJOIN() */ 1')))
             )
             ->defaultSort('id', 'desc')
             ->columns([
@@ -65,7 +67,7 @@ class InvoiceDetailsTable
             ->schema([
                 Grid::make(4)
                     ->schema([
-                        ...static::getDateRangeFilterFields(),
+                        ...static::getDateRangeFilterFields(defaultToLastMonth: true),
                         Select::make('date_type')
                             ->label(__('global.date_type'))
                             ->options([

@@ -9,19 +9,22 @@ use Illuminate\Support\Carbon;
 trait HasDateRangeFilter
 {
     /**
+     * @param  bool  $defaultToLastMonth  Pre-fill the range with the last month up to today.
      * @return array<DatePicker>
      */
-    protected static function getDateRangeFilterFields(): array
+    protected static function getDateRangeFilterFields(bool $defaultToLastMonth = false): array
     {
         return [
             DatePicker::make('from_date')
                 ->label(__('global.from_date'))
+                ->default(fn () => $defaultToLastMonth ? now()->subMonth()->toDateString() : null)
                 ->native(false)
                 ->suffixIcon('heroicon-o-calendar')
                 ->displayFormat('d-m-Y')
                 ->placeholder('DD-MM-YYYY'),
             DatePicker::make('to_date')
                 ->label(__('global.to_date'))
+                ->default(fn () => $defaultToLastMonth ? now()->toDateString() : null)
                 ->native(false)
                 ->suffixIcon('heroicon-o-calendar')
                 ->displayFormat('d-m-Y')

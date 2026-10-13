@@ -48,7 +48,7 @@ class InventoryMovementsTable
             ->columnSpan(3)
             ->schema([
                 Grid::make(2)
-                    ->schema(static::getDateRangeFilterFields()),
+                    ->schema(static::getDateRangeFilterFields(defaultToLastMonth: true)),
             ])
             ->query(fn (Builder $query, array $data): Builder => static::applyDateRangeFilter($query, $data));
     }

@@ -167,7 +167,7 @@ class InvoicesTable
             ->schema([
                 Grid::make(4)
                     ->schema([
-                        ...static::getDateRangeFilterFields(),
+                        ...static::getDateRangeFilterFields(defaultToLastMonth: true),
                         Select::make('date_type')
                             ->label(__('global.date_type'))
                             ->options([

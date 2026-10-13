@@ -64,7 +64,7 @@ class InventoryAdjustmentsTable
                     ->modalCancelActionLabel(__('global.cancel'))
                     ->modalFooterActionsAlignment(Alignment::End)
                     ->slideOver(),
-                
+
             ], position: RecordActionsPosition::BeforeCells)
             ->toolbarActions([
                 // BulkActionGroup::make([
@@ -154,12 +154,14 @@ class InventoryAdjustmentsTable
                     ->schema([
                         DatePicker::make('from_date')
                             ->label(__('global.from_date'))
+                            ->default(fn () => now()->subMonth()->toDateString())
                             ->native(false)
                             ->suffixIcon('heroicon-o-calendar')
                             ->displayFormat('d-m-Y')
                             ->placeholder('DD-MM-YYYY'),
                         DatePicker::make('to_date')
                             ->label(__('global.to_date'))
+                            ->default(fn () => now()->toDateString())
                             ->native(false)
                             ->suffixIcon('heroicon-o-calendar')
                             ->displayFormat('d-m-Y')
