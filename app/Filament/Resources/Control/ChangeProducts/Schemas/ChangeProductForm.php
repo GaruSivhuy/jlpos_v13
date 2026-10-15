@@ -129,7 +129,7 @@ class ChangeProductForm
                                     ->label(__('global.amount'))
                                     ->required()
                                     ->numeric()
-                                    ->minValue(0)
+                                    // ->minValue(0)
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn (Get $get, Set $set) => static::recalculate($get, $set))
                                     ->validationMessages([
