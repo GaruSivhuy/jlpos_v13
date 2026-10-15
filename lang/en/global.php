@@ -135,6 +135,7 @@ return [
     'other_phone' => 'Other Phone',
     'username' => 'Username',
     'password' => 'Password',
+    'password_keep_hint' => 'Leave blank to keep the current password.',
     'new' => 'New',
     'the_email_already_taken_by_other_user' => 'The email already taken by other user.',
     'sucess' => 'Sucess',

@@ -59,9 +59,11 @@ class UserForm
                                 TextInput::make('password')
                                     ->password()
                                     ->revealable()
-                                    ->required()
+                                    ->required(fn (string $operation): bool => $operation === 'create')
                                     ->confirmed()
-                                    ->visibleOn('create')
+                                    ->dehydrated(fn (?string $state): bool => filled($state))
+                                    ->visible(fn (string $operation): bool => $operation === 'create' || (bool) auth()->user()?->is_admin)
+                                    ->helperText(fn (string $operation): ?string => $operation === 'edit' ? __('global.password_keep_hint') : null)
                                     ->label(__('global.password'))
                                     ->validationMessages([
                                         'required' => __('validation.required', ['attribute' => __('global.password')]),
@@ -69,9 +71,10 @@ class UserForm
                                 TextInput::make('password_confirmation')
                                     ->password()
                                     ->revealable()
-                                    ->required()
+                                    ->required(fn (string $operation): bool => $operation === 'create')
+                                    ->requiredWith('password')
                                     ->dehydrated(false)
-                                    ->visibleOn('create')
+                                    ->visible(fn (string $operation): bool => $operation === 'create' || (bool) auth()->user()?->is_admin)
                                     ->label(__('global.confirm_password'))
                                     ->validationMessages([
                                         'required' => __('validation.required', ['attribute' => __('global.confirm_password')]),

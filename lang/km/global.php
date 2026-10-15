@@ -142,6 +142,7 @@ return [
     'other_phone' => 'ទូរស័ព្ទផ្សេងទៀត',
     'username' => 'ឈ្មោះអ្នកប្រើប្រាស់',
     'password' => 'លេខសម្ងាត់',
+    'password_keep_hint' => 'ទុកទទេ ដើម្បីរក្សាលេខសម្ងាត់បច្ចុប្បន្ន។',
     'new' => 'ថ្មី',
     'the_email_already_taken_by_other_user' => 'អុីម៉ែលនេះមាននៅក្នុងទិន្នន័យហើយ',
     'success' => 'ជោគជ័យ',

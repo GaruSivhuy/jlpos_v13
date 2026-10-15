@@ -30,6 +30,7 @@ class InvoiceResource extends Resource implements HasShieldPermissions
             'create',
             'update',
             'delete',
+            'payment',
             'change_payment',
             'cancel'
         ];

@@ -504,7 +504,7 @@ class Pos extends Page
                 && $this->invoice->status != Invoice::PAID
                 && $this->invoice->invoiceItems->isNotEmpty()
                 && round((float) $this->invoice->paid_amount, 2) < round((float) $this->invoice->total, 2)
-                && InvoiceResource::userCan('sale:sale:payment'))
+                && InvoiceResource::userCan('payment:invoice'))
             ->modalHeading(__('global.payment'))
             ->modalWidth('2xl')
             ->modalSubmitActionLabel(__('global.save'))
