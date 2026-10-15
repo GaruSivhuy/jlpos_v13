@@ -96,7 +96,7 @@ class InvoicesTable
             ->tooltip(__('global.edit'))
             ->hiddenLabel()
             ->icon('heroicon-o-pencil-square')
-            ->visible(fn (Invoice $record) => $record->status == Invoice::UNPAID && InvoiceResource::userCan('sale:sale:edit'))
+            ->visible(fn (Invoice $record) => $record->status == Invoice::UNPAID && InvoiceResource::userCan('update:invoice'))
             ->url(fn (Invoice $record) => InvoiceResource::getUrl('pos', ['sale_id' => $record->getRouteKey()]));
     }
 

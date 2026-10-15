@@ -501,8 +501,9 @@ class Pos extends Page
             ->icon('heroicon-o-currency-dollar')
             ->color('success')
             ->visible(fn () => $this->invoice !== null
+                && $this->invoice->status != Invoice::PAID
                 && $this->invoice->invoiceItems->isNotEmpty()
-                && $this->invoice->paid_amount < $this->invoice->total
+                && round((float) $this->invoice->paid_amount, 2) < round((float) $this->invoice->total, 2)
                 && InvoiceResource::userCan('sale:sale:payment'))
             ->modalHeading(__('global.payment'))
             ->modalWidth('2xl')

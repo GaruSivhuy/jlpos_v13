@@ -132,7 +132,7 @@
 
             <div class="flex justify-end gap-2">
                 @if($this->invoice && auth()->user()->can('sale:sale:payment'))
-                    @if($this->invoice->paid_amount < $this->invoice->total)
+                    @if(round((float) $this->invoice->paid_amount, 2) < round((float) $this->invoice->total, 2))
                         <x-filament::button color="success" icon="heroicon-o-currency-dollar"
                                              wire:click="$dispatch('open-modal', { id: 'payment-modal' })">
                             {{ __('sale::sale.pay') }}

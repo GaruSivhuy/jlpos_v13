@@ -130,7 +130,9 @@
                 </div>
 
                 <div class="mt-4 flex flex-wrap justify-end gap-2">
-                    {{ $this->payAction }}
+                    @if ($invoice?->status != \App\Models\Invoice::PAID)
+                        {{ $this->payAction }}
+                    @endif
 
                     @if ($invoice && $invoice->invoiceItems->isNotEmpty())
                         <x-filament::button
