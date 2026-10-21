@@ -126,7 +126,8 @@ class ChangeProductsTable
                     $taken = $record->inventories->takeFromLocation(
                         $quantity,
                         $location,
-                        $metric,
+                        // $metric,
+                        null,
                         'Take to Change Product from stock '.$location->name_kh.' on '.now()->format('Y-m-d h:i:s'),
                     );
 
